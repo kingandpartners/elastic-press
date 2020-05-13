@@ -1,0 +1,58 @@
+{
+  "name": "jGRUBBS/elastic-press",
+  "authors": [
+    {
+      "name": "Justin Grubbs",
+      "email": "justin@jgrubbs.net"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/jGRUBBS/acf-field-group-composer"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "advanced-custom-fields/advanced-custom-fields-pro",
+        "version": "5.8.7",
+        "type": "wordpress-plugin",
+        "dist": {
+          "type": "zip",
+          "url": "https://connect.advancedcustomfields.com/index.php?p=pro&a=download"
+        },
+        "require": {
+          "philippbaschke/acf-pro-installer": "^1.0",
+          "composer/installers": "^1.0"
+        }
+      }
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0",
+    "advanced-custom-fields/advanced-custom-fields-pro": "*",
+    "flyntwp/acf-field-group-composer": "dev-flattenNestedFilters"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5",
+    "squizlabs/php_codesniffer": "~3.0",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
+    "wp-coding-standards/wpcs": "*"
+  },
+  "extra": {
+    "installer-paths": {
+      "vendor/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin",
+        "flyntwp/acf-field-group-composer",
+        "advanced-custom-fields/advanced-custom-fields-pro"
+      ]
+    },
+    "wordpress-install-dir": "web/wp"
+  },
+  "type": "wordpress-plugin"
+}

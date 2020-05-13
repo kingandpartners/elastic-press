@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+TMPDIR=${TMPDIR-/tmp}
+TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
+WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
+WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
+
+# clears uploads so they don't increment
+rm -rf ${WP_CORE_DIR}wp-content/uploads/*
+
+# Run theme tests using custom phpunit config
+phpunit -c phpunit.xml.dist

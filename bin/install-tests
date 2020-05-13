@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+source '.env.test';
+
+version=latest
+
+# when you are installing test suite for first time if you want to create the
+# database remove the last argument "true"
+bin/install-wp-tests.sh "$DB_NAME" "$DB_USER" "$DB_PASSWORD" "$DB_HOST" "$version" "true"
