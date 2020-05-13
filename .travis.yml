@@ -22,7 +22,7 @@ before_install:
   - sudo service elasticsearch restart
 
 install:
-  - bin/composer_install
+  - composer install
 
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
