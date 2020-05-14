@@ -23,11 +23,26 @@ require_once $_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function _manually_load_plugin() {
-	require dirname( dirname( __FILE__ ) ) . '/elastic-press.php';
 	// Manually require dependencies.
 	require_once 'vendor/autoload.php';
 	require_once 'vendor/mu-plugins/advanced-custom-fields-pro/acf.php';
 	require_once 'vendor/mu-plugins/acf-field-group-composer/acf-field-group-composer.php';
+	$root_dir = dirname( dirname( __FILE__ ) );
+	/**
+	 * Expose global env() function from oscarotero/env
+	 */
+	Env::init();
+
+	/**
+	 * Use Dotenv to set required environment variables and load .env file in root
+	 */
+	if ( file_exists( $root_dir . '/.env.test' ) ) {
+		$dotenv = new Dotenv\Dotenv( $root_dir, '/.env.test' );
+		$dotenv->load();
+		$dotenv->required( array( 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'ELASTICSEARCH_URL', 'SITE_INDEX_KEY', 'WP_ENV' ) );
+	}
+
+	require $root_dir . '/elastic-press.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 

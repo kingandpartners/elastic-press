@@ -13,9 +13,17 @@
  */
 
 /**
+ * Define constants
+ */
+define( 'ELASTICSEARCH_URL', getenv( 'ELASTICSEARCH_URL' ) );
+define( 'WP_ENV', getenv( 'WP_ENV' ) );
+define( 'SITE_INDEX_KEY', getenv( 'SITE_INDEX_KEY' ) );
+
+/**
  * Require necessary files
  */
 require_once 'includes/utils/class-arrayhelpers.php';
 require_once 'includes/utils/class-inlinesvg.php';
+require_once 'includes/elasticsearch/functions.php';
 require_once 'includes/serializers.php';
 require_once 'includes/acf.php';
