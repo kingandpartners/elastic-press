@@ -27,7 +27,6 @@ before_install:
   - sudo service elasticsearch restart
 
 install:
-  - ln -s `pwd`/.env wordpress/
   - composer install
 
 before_script:
