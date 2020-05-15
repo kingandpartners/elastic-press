@@ -63,10 +63,12 @@ class Client {
 				'SELECT DISTINCT taxonomy FROM ' . $wpdb->term_taxonomy
 			);
 			$taxons_indexes = array_column( $taxons_indexes, 'taxonomy' );
-			$taxons_indexes = array_merge( $taxons_indexes, array( 'category' ) );
+			$taxons_indexes = array_merge( $taxons_indexes, array( 'category', 'nav_menu' ) );
 			$indexes        = array_merge( $posts_indexes, $taxons_indexes );
+			array_push( $indexes, 'options', 'seo' );
+			$indexes = array_values( array_unique( $indexes ) );
 
-			static::$indexes = array_unique( $indexes );
+			static::$indexes = apply_filters( 'ep_indicies', $indexes );
 		}
 		return static::$indexes;
 	}

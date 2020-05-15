@@ -252,3 +252,18 @@ function image_filesize( $file ) {
 	}
 	return $filesize;
 }
+
+/**
+ * Serialize and add ACF data to nav items
+ *
+ * @param WP_Post $nav_item The nav menu item object.
+ * @return Array
+ */
+function nav_map( $nav_item ) {
+	$data     = (array) $nav_item;
+	$acf_data = acf_data( $nav_item->ID );
+	if ( is_array( $acf_data ) ) {
+		$data = array_merge( $acf_data, $data );
+	}
+	return $data;
+}

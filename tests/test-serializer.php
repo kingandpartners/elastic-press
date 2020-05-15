@@ -137,11 +137,11 @@ class SerializerTest extends WP_UnitTestCase {
 		$this->assertEquals(
 			$result['taxonomies'][0],
 			array(
-				'term_id'          => 2,
+				'term_id'          => 3,
 				'name'             => 'some-term',
 				'slug'             => 'some-term',
 				'term_group'       => 0,
-				'term_taxonomy_id' => 2,
+				'term_taxonomy_id' => 3,
 				'taxonomy'         => 'some-taxonomy',
 				'description'      => '',
 				'parent'           => 0,
