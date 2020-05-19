@@ -120,7 +120,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 		ElasticSearch\Client::update_read_aliases();
 		$found = elasticsearch_where(
 			$taxonomy,
-			array( 'post_status' => 'publish' ),
+			array( 'post_status' => 'publish' )
 		);
 		$this->assertCount( 3, $found );
 	}
