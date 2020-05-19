@@ -134,23 +134,16 @@ class SerializerTest extends WP_UnitTestCase {
 		$result  = Serializers\post_data( $post );
 
 		$this->assertEquals( $result['post_title'], 'Some content' );
-		$this->assertEquals(
-			$result['taxonomies'][0],
+		$this->assertArraySubset(
 			array(
-				'term_id'          => 3,
-				'name'             => 'some-term',
-				'slug'             => 'some-term',
-				'term_group'       => 0,
-				'term_taxonomy_id' => 3,
-				'taxonomy'         => 'some-taxonomy',
-				'description'      => '',
-				'parent'           => 0,
-				'count'            => 1,
-				'filter'           => 'raw',
-				'url'              => 'http://example.org/?some-taxonomy=some-term',
-				'post_name'        => 'some-term',
-				'post_status'      => 'publish',
-			)
+				'name'        => 'some-term',
+				'slug'        => 'some-term',
+				'taxonomy'    => 'some-taxonomy',
+				'count'       => 1,
+				'post_name'   => 'some-term',
+				'post_status' => 'publish',
+			),
+			$result['taxonomies'][0]
 		);
 	}
 

@@ -9,8 +9,10 @@ use ACFComposer\ACFComposer;
 use ElasticPress\ElasticSearch;
 use ElasticPress\Serializers;
 use ElasticPress\Storage;
+use ElasticPress\Sweepers;
 use function ElasticPress\ElasticSearch\elasticsearch_find;
 use function ElasticPress\ElasticSearch\elasticsearch_store;
+use function ElasticPress\ElasticSearch\elasticsearch_where;
 
 /**
  * Test for ElasticSearch client class
@@ -103,64 +105,86 @@ class ElasticsearchTest extends WP_UnitTestCase {
 		$this->assertEquals( $found['menu_items'][0]['url'], 'http://test.com' );
 	}
 
+
 	/**
 	 * Test store_terms_data
 	 */
 	public function test_store_terms_data() {
-		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+		ElasticSearch\Client::$indexes = null;
+		$taxonomy                      = 'custom_tax';
+		register_taxonomy( $taxonomy, null );
+		$this->factory()->term->create_many( 3, array( 'taxonomy' => $taxonomy ) );
+		// since we are adding a custom taxonomy index we need to update the aliases.
+		ElasticSearch\Client::update_write_aliases();
+		Storage\store_terms_data( $taxonomy );
+		ElasticSearch\Client::update_read_aliases();
+		$found = elasticsearch_where(
+			$taxonomy,
+			array( 'post_status' => 'publish' ),
+		);
+		$this->assertCount( 3, $found );
 	}
 
 	/**
 	 * Test store_options
 	 */
 	public function test_store_options() {
-		// acf_add_options_page(
-		// array(
-		// 'page_title' => 'globalOptions',
-		// 'menu_title' => 'globalOptions',
-		// 'menu_slug'  => 'GlobalOptions',
-		// )
-		// );
-		//
-		// acf_add_options_sub_page(
-		// array(
-		// 'page_title'   => 'SomePage',
-		// 'menu_title'   => 'SomePage',
-		// 'menu_slug'    => 'globalOptionsSomePage',
-		// 'parent_slug'  => 'GlobalOptions',
-		// 'supports'     => array( 'editor' ),
-		// 'show_in_rest' => true,
-		// )
-		// );
-		//
-		// $field_group = ACFComposer::registerFieldGroup(
-		// array(
-		// 'name'     => 'globalOptionsSomePage',
-		// 'title'    => 'Global Options',
-		// 'fields'   => array(
-		// array(
-		// 'name'  => 'globalOptionsSomePage_some_data',
-		// 'label' => 'Some Data',
-		// 'type'  => 'text',
-		// ),
-		// ),
-		// 'location' => array(
-		// array(
-		// array(
-		// 'param'    => 'options_page',
-		// 'operator' => '==',
-		// 'value'    => 'globalOptionsSomePage',
-		// ),
-		// ),
-		// ),
-		// )
-		// );
-		//
-		// update_option( '_options_globalOptionsSomePage_some_data', 'field_globalOptionsSomePage_some_data' );
-		// update_option( 'options_globalOptionsSomePage_some_data', 'test' );
-		// $this->assertEquals( acf_get_meta( 'options' ), array() );
-		// $this->assertEquals( ElasticPress\Acf\acf_data( 'options' ), array() );
-		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+		acf_add_options_page(
+			array(
+				'page_title' => 'globalOptions',
+				'menu_title' => 'globalOptions',
+				'menu_slug'  => 'GlobalOptions',
+			)
+		);
+
+		acf_add_options_sub_page(
+			array(
+				'page_title'   => 'SomePage',
+				'menu_title'   => 'SomePage',
+				'menu_slug'    => 'globalOptionsSomePage',
+				'parent_slug'  => 'GlobalOptions',
+				'show_in_rest' => true,
+			)
+		);
+
+		$field_group = ACFComposer::registerFieldGroup(
+			array(
+				'name'     => 'globalOptionsSomePage',
+				'title'    => 'Global Options',
+				'fields'   => array(
+					array(
+						'name'  => 'globalOptionsSomePage_some_data',
+						'label' => 'Some Data',
+						'type'  => 'text',
+					),
+				),
+				'location' => array(
+					array(
+						array(
+							'param'    => 'options_page',
+							'operator' => '==',
+							'value'    => 'globalOptionsSomePage',
+						),
+					),
+				),
+			)
+		);
+
+		update_option( '_options_globalOptionsSomePage_some_data', 'field_globalOptionsSomePage_globalOptionsSomePage_some_data' );
+		update_option( 'options_globalOptionsSomePage_some_data', 'test' );
+		Storage\store_options( 'options' );
+		ElasticSearch\Client::update_read_aliases();
+		$found = elasticsearch_find( 'globalOptionsSomePage', 'options' );
+		$this->assertEquals( $found, array( 'some_data' => 'test' ) );
+	}
+
+	/**
+	 * Test warm_site_cache
+	 */
+	public function test_warm_site_cache() {
+		// Overly simple test to make sure nothing is breaking in sweeper methods.
+		Sweepers\warm_site_cache();
+		$this->assertEquals( true, true );
 	}
 
 	/**

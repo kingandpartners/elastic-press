@@ -10,6 +10,7 @@ namespace ElasticPress\Storage;
 use ElasticPress\ElasticSearch;
 use function ElasticPress\Serializers\post_data;
 use function ElasticPress\Serializers\page_data;
+use function ElasticPress\Serializers\term_data;
 use function ElasticPress\Acf\acf_data;
 
 /**
@@ -61,7 +62,12 @@ function store_term( $term ) {
  * @param string $type The type of taxonomy to store.
  */
 function store_terms_data( $type ) {
-	$terms = get_terms( array( 'taxonomy' => $type ) );
+	$terms = get_terms(
+		array(
+			'taxonomy'   => $type,
+			'hide_empty' => false,
+		)
+	);
 	foreach ( $terms as $term ) {
 		if ( is_object( $term ) ) {
 			store_term( $term );

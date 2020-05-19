@@ -8,6 +8,7 @@
 namespace ElasticPress\Sweepers;
 
 use ElasticPress\Storage;
+use ElasticPress\ElasticSearch;
 
 /**
  * Loops through all content and stores it into Elasticsearch - also clears indexes
