@@ -26,6 +26,7 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo rm -rf /var/lib/elasticsearch/*
   - sudo service elasticsearch restart
+  - curl localhost:9200/
 
 install:
   - composer install
@@ -42,6 +43,7 @@ before_script:
   - composer global require "phpunit/phpunit:7.*"
 
 script:
+  - curl localhost:9200/
   - bin/run-tests
 
 services:
