@@ -26,7 +26,6 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo rm -rf /var/lib/elasticsearch/*
   - sudo service elasticsearch restart
-  - curl localhost:9200/
 
 install:
   - composer install
