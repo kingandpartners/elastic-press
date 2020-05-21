@@ -87,10 +87,11 @@ class Client {
 		try {
 			self::client()->index(
 				array(
-					'index' => $index_name,
-					'type'  => static::$type, // Type is deprecated in ES6 so don't use it.
-					'id'    => $id,
-					'body'  => $value,
+					'index'   => $index_name,
+					'type'    => static::$type, // Type is deprecated in ES6 so don't use it.
+					'id'      => $id,
+					'body'    => $value,
+					'refresh' => true,
 				)
 			);
 		} catch ( \Exception $e ) {
