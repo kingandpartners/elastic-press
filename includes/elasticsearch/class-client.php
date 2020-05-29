@@ -134,24 +134,36 @@ class Client {
 	public static function where_query( $index, $params ) {
 		$index_name = self::read_index_alias( $index );
 
+		// Remove empty params.
+		foreach ( $params as $key => $value ) {
+			if ( empty( $value ) ) {
+				unset( $params[ $key ] );
+			}
+		}
+		if ( empty( $params ) ) {
+			return array();
+		}
+
+		// Scope queries by published status.
+		$status = isset( $params['post_status'] ) ? $params['post_status'] : 'publish';
+		$params = array_merge( $params, array( 'post_status' => $status ) );
+
+		// Convert `id` fields into integers.
+		array_walk(
+			$params,
+			function( &$v, $k ) {
+				if ( false !== stripos( $k, 'id' ) ) {
+					  $v = ( is_array( $v ) ) ? array_map( 'intval', $v ) : intval( $v );
+				}
+			}
+		);
+
 		$or_params = array_filter(
 			$params,
 			function( $v ) {
 				return is_array( $v );
 			}
 		);
-
-		$or_queries = array();
-		foreach ( $or_params as $k => $v ) {
-			$or_query = array_map(
-				function( $val ) use ( $k ) {
-					return "$k:$val";
-				},
-				$v
-			);
-			$or_query = implode( ' OR ', $or_query );
-			array_push( $or_queries, "($or_query)" );
-		}
 
 		$and_params = array_filter(
 			$params,
@@ -160,13 +172,95 @@ class Client {
 			}
 		);
 
-		$and_queries = array();
-		foreach ( $and_params as $k => $v ) {
-			array_push( $and_queries, "$k:$v" );
+		$id_params = array_filter(
+			$params,
+			function( $v, $k ) {
+				return false !== stripos( $k, 'id' );
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		$sort_param = null;
+		foreach ( $id_params as $key => $val ) {
+			if ( is_array( $val ) ) {
+				$sort_param = array( $key, $val );
+			}
 		}
 
-		$query = implode( ' AND ', array_merge( $or_queries, $and_queries ) );
-		return $query;
+		$query = array( 'bool' => array() );
+
+		if ( ! empty( $or_params ) ) {
+			array_walk(
+				$or_params,
+				function( &$v, $k ) {
+					$values = (array) $v;
+					$keys   = array_fill( 0, count( $values ), $k );
+					$v      = array_map( 'self::map_param', $keys, $values );
+				}
+			);
+			$query['bool'] = array(
+				'minimum_should_match' => 1,
+				'should'               => array_values( $or_params ),
+			);
+		}
+
+		if ( ! empty( $and_params ) ) {
+			array_walk(
+				$and_params,
+				function( &$v, $k ) {
+					$v = self::map_param( $k, $v );
+				}
+			);
+			$query['bool'] = array_merge(
+				$query['bool'],
+				array(
+					'must' => array_values( $and_params ),
+				)
+			);
+		}
+
+		$body = array( 'query' => $query );
+
+		if ( ! empty( $sort_param ) ) {
+			list( $key, $ids ) = $sort_param;
+			$script            = self::painless_script( $key );
+			$body['sort']      = array(
+				array(
+					'_script' => array(
+						'type'   => 'number',
+						'script' => array(
+							'lang'   => 'painless',
+							'source' => $script,
+							'params' => array( 'ids' => $ids ),
+						),
+						'order'  => 'asc',
+					),
+				),
+			);
+		}
+
+		return array(
+			'index' => $index_name,
+			'body'  => $body,
+			'size'  => 10000,
+		);
+	}
+
+	/**
+	 * Builds a painless script for ElasticSearch
+	 *
+	 * @param string $key The key for the id.
+	 * @return string
+	 */
+	private static function painless_script( $key ) {
+		return <<<SOURCE
+int id = Integer.parseInt(doc['$key'].value);
+List ids = params.ids;
+for (int i = 0; i < ids.length; i++) {
+	if (ids.get(i) == id) { return i; }
+}
+return 100000;
+SOURCE;
 	}
 
 	/**
@@ -176,14 +270,8 @@ class Client {
 	 * @param Array  $params Array of lookup parameters.
 	 */
 	public static function where( $index, $params ) {
-		$index_name = self::read_index_alias( $index );
-		$query      = self::where_query( $index, $params );
-
-		$query_params = array(
-			'index' => $index_name,
-			'size'  => 10000, // set arbitrarily large number to return 'all'.
-			'q'     => $query,
-		);
+		$index_name   = self::read_index_alias( $index );
+		$query_params = self::where_query( $index, $params );
 		$results      = self::client()->search( $query_params );
 		if ( empty( $results['hits']['hits'] ) ) {
 			$records = array();
@@ -205,14 +293,8 @@ class Client {
 	 * @param Array  $params Array of lookup parameters.
 	 */
 	public static function delete_where( $index, $params ) {
-		$index_name = self::read_index_alias( $index );
-		$query      = self::where_query( $index, $params );
-
-		$query_params = array(
-			'index' => $index_name,
-			'type'  => static::$type,
-			'q'     => $query,
-		);
+		$index_name   = self::read_index_alias( $index );
+		$query_params = self::where_query( $index, $params );
 		self::client()->deleteByQuery( $query_params );
 	}
 
@@ -239,6 +321,27 @@ class Client {
 						'mapping' => array(
 							'total_fields' => array(
 								'limit' => 10000,
+							),
+						),
+					),
+					'mappings' => array(
+						'jsondata' => array(
+							'properties' => array(
+								'taxonomies' => array(
+									'type' => 'nested',
+								),
+								'unit_id'    => array(
+									'type' => 'keyword',
+								),
+								'ID'         => array(
+									'type' => 'keyword',
+								),
+								'id'         => array(
+									'type' => 'keyword',
+								),
+								'post_id'    => array(
+									'type' => 'keyword',
+								),
 							),
 						),
 					),
@@ -342,6 +445,44 @@ class Client {
 		$current_blog_id = get_current_blog_id();
 
 		return SITE_INDEX_KEY . $current_blog_id . '_' . $environment . '_' . $type;
+	}
+
+	/**
+	 * Maps params to either term or nested query parameters
+	 *
+	 * @param string $key The key identifier of the field.
+	 * @param mixed  $value The mixed value of the field.
+	 */
+	private static function map_param( $key, $value ) {
+		$is_assoc = (
+			is_array( $value ) &&
+			array_keys( $value ) !== range( 0, count( $value ) - 1 )
+		);
+		if ( $is_assoc ) {
+			return array(
+				'nested' => array(
+					'path'  => $key,
+					'query' => array(
+						'bool' => array(
+							'must' => array_values(
+								array_walk(
+									$value,
+									function( &$v, $k ) {
+										$k = ( is_int( $value ) ) ? $k : "$k.keyword";
+										$v = array( 'match' => array( "$key.$k" => $v ) );
+									}
+								)
+							),
+						),
+					),
+				),
+			);
+		} else {
+			$key = ( is_int( $value ) ) ? $key : "$key.keyword";
+			return array(
+				'term' => array( $key => $value ),
+			);
+		}
 	}
 
 }

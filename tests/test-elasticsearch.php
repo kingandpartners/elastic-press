@@ -126,6 +126,23 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test elasticsearch_where
+	 */
+	public function test_elasticsearch_where() {
+		$post_1 = $this->factory->post->create_and_get();
+		$post_2 = $this->factory->post->create_and_get();
+		$post_3 = $this->factory->post->create_and_get();
+		ElasticPress\Sweepers\sweep_post_type( 'post' );
+		ElasticSearch\Client::update_read_aliases();
+
+		$id_arr = array( $post_3->ID, $post_2->ID, $post_1->ID );
+
+		$posts = elasticsearch_where( 'post', array( 'ID' => $id_arr ) );
+
+		$this->assertEquals( $id_arr, array_column( $posts, 'ID' ) );
+	}
+
+	/**
 	 * Test store_options
 	 */
 	public function test_store_options() {
