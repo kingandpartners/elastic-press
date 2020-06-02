@@ -19,6 +19,10 @@ if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
 // Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
 
+// Give access to test support functions.
+require_once 'support/acf-options-page/functions.php';
+require_once 'support/nav-menus/functions.php';
+
 /**
  * Manually load the plugin being tested.
  */

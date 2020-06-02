@@ -29,3 +29,4 @@ require_once 'includes/acf.php';
 require_once 'includes/serializers.php';
 require_once 'includes/storage.php';
 require_once 'includes/sweepers.php';
+require_once 'includes/wp-save-hooks.php';

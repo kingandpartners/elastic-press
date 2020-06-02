@@ -5,7 +5,6 @@
  * @package Elastic_Press
  */
 
-use ACFComposer\ACFComposer;
 use ElasticPress\ElasticSearch;
 use ElasticPress\Serializers;
 use ElasticPress\Storage;
@@ -13,6 +12,9 @@ use ElasticPress\Sweepers;
 use function ElasticPress\ElasticSearch\elasticsearch_find;
 use function ElasticPress\ElasticSearch\elasticsearch_store;
 use function ElasticPress\ElasticSearch\elasticsearch_where;
+use function Support\AcfOptionsPage\register_global_options_page;
+use function Support\AcfOptionsPage\store_options_page;
+use function Support\NavMenus\create_nav_menu;
 
 /**
  * Test for ElasticSearch client class
@@ -96,7 +98,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 * Test store_menu
 	 */
 	public function test_store_menu() {
-		$menu = $this->createNavMenu();
+		$menu = create_nav_menu( $this->factory );
 		Storage\store_menu( $menu );
 		ElasticSearch\Client::update_read_aliases();
 		$found = elasticsearch_find( 'test-menu_nav', 'nav_menu' );
@@ -146,49 +148,18 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 * Test store_options
 	 */
 	public function test_store_options() {
-		acf_add_options_page(
+		register_global_options_page(
+			'SomePage',
 			array(
-				'page_title' => 'globalOptions',
-				'menu_title' => 'globalOptions',
-				'menu_slug'  => 'GlobalOptions',
-			)
-		);
-
-		acf_add_options_sub_page(
-			array(
-				'page_title'   => 'SomePage',
-				'menu_title'   => 'SomePage',
-				'menu_slug'    => 'globalOptionsSomePage',
-				'parent_slug'  => 'GlobalOptions',
-				'show_in_rest' => true,
-			)
-		);
-
-		$field_group = ACFComposer::registerFieldGroup(
-			array(
-				'name'     => 'globalOptionsSomePage',
-				'title'    => 'Global Options',
-				'fields'   => array(
-					array(
-						'name'  => 'globalOptionsSomePage_some_data',
-						'label' => 'Some Data',
-						'type'  => 'text',
-					),
-				),
-				'location' => array(
-					array(
-						array(
-							'param'    => 'options_page',
-							'operator' => '==',
-							'value'    => 'globalOptionsSomePage',
-						),
-					),
+				array(
+					'name'  => 'some_data',
+					'label' => 'Some Data',
+					'type'  => 'text',
 				),
 			)
 		);
+		store_options_page( 'globalOptionsSomePage', 'some_data', 'test' );
 
-		update_option( '_options_globalOptionsSomePage_some_data', 'field_globalOptionsSomePage_globalOptionsSomePage_some_data' );
-		update_option( 'options_globalOptionsSomePage_some_data', 'test' );
 		Storage\store_options( 'options' );
 		ElasticSearch\Client::update_read_aliases();
 		$found = elasticsearch_find( 'globalOptionsSomePage', 'options' );
@@ -202,37 +173,6 @@ class ElasticsearchTest extends WP_UnitTestCase {
 		// Overly simple test to make sure nothing is breaking in sweeper methods.
 		Sweepers\warm_site_cache();
 		$this->assertEquals( true, true );
-	}
-
-	/**
-	 * Helper function to create a menu with one nav menu item
-	 */
-	private function createNavMenu() {
-		// Create nav menu.
-		$nav_menu = $this->factory->term->create_and_get(
-			array(
-				'name'     => 'Test Menu',
-				'taxonomy' => 'nav_menu',
-				'slug'     => 'test-menu',
-			)
-		);
-		// Create nav menu item.
-		$menu_item = $this->factory->post->create_and_get(
-			array(
-				'post_title' => 'Instagram',
-				'post_type'  => 'nav_menu_item',
-			)
-		);
-		// Add menu item to nav menu.
-		wp_set_object_terms( $menu_item->ID, array( $nav_menu->term_id ), 'nav_menu' );
-		// Update postmeta for menu item (link details).
-		update_post_meta( $menu_item->ID, '_menu_item_type', 'custom' );
-		update_post_meta( $menu_item->ID, '_menu_item_menu_item_parent', 0 );
-		update_post_meta( $menu_item->ID, '_menu_item_object_id', $menu_item->ID );
-		update_post_meta( $menu_item->ID, '_menu_item_object', 'custom' );
-		update_post_meta( $menu_item->ID, '_menu_item_target', '' );
-		update_post_meta( $menu_item->ID, '_menu_item_url', 'http://test.com' );
-		return $nav_menu;
 	}
 
 }
