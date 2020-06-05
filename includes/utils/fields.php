@@ -83,7 +83,7 @@ function register_fields() {
 				Fields\register_block(
 					$type,
 					$config['config']['block'],
-					$config['config']['fields'],
+					$config['config']['fields']
 				);
 			}
 
@@ -91,7 +91,7 @@ function register_fields() {
 				Fields\register_group(
 					$type,
 					$config['config']['group'],
-					$config['config']['fields'],
+					$config['config']['fields']
 				);
 			}
 
