@@ -20,7 +20,6 @@ if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
 require_once $_tests_dir . '/includes/functions.php';
 
 // Give access to test support functions.
-require_once 'support/acf-options-page/functions.php';
 require_once 'support/nav-menus/functions.php';
 
 /**

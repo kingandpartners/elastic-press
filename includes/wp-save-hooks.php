@@ -11,10 +11,10 @@ namespace ElasticPress\WpSaveHooks;
 use ElasticPress\Storage;
 use ElasticPress\ElasticSearch;
 
-add_action( 'wp_insert_post', 'ElasticPress\WpSaveHooks\wp_insert_post', 10, 3 );
-add_action( 'acf/save_post', 'ElasticPress\WpSaveHooks\acf_save_post', 10, 3 );
-add_action( 'edited_term', 'ElasticPress\WpSaveHooks\edited_term', 10, 3 );
-add_action( 'wp_update_nav_menu', 'ElasticPress\WpSaveHooks\wp_update_nav_menu', 10, 1 );
+add_action( 'wp_insert_post', __NAMESPACE__ . '\wp_insert_post', 10, 3 );
+add_action( 'acf/save_post', __NAMESPACE__ . '\acf_save_post', 10, 3 );
+add_action( 'edited_term', __NAMESPACE__ . '\edited_term', 10, 3 );
+add_action( 'wp_update_nav_menu', __NAMESPACE__ . '\wp_update_nav_menu', 10, 1 );
 
 /**
  * Handles the 'wp_insert_post' action from WordPress and stores serialized Post

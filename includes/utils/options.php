@@ -1,35 +1,65 @@
 <?php
 /**
- * Support\AcfOptionsPage helper functions for registering and storing ACF
+ * ElasticPress\Utils\Options helper functions for registering and storing ACF
  * Options pages
  *
  * @package Elastic_Press
  */
 
-namespace Support\AcfOptionsPage;
+namespace ElasticPress\Utils\Options;
 
 use ACFComposer\ACFComposer;
+use ElasticPress\Utils\Config;
+
+/**
+ * Register global options
+ */
+function register_global_options() {
+	$fields = array();
+	if ( isset( Config::$files['cms']['fields.json'] ) ) {
+		$fields['feature'] = Config::$files['cms']['fields.json'];
+	}
+	if ( isset( Config::$files['frontend']['fields.json'] ) ) {
+		$fields['component'] = Config::$files['frontend']['fields.json'];
+	}
+
+	foreach ( $fields as $type => $configs ) {
+		foreach ( $configs as $config ) {
+			if ( isset( $config['config']['globalOptions'] ) ) {
+				register_global_options_page(
+					$type,
+					$config['name'],
+					$config['config']['globalOptions']
+				);
+			}
+		}
+	}
+}
 
 /**
  * Helper function to register ACF Global Options page
  *
+ * @param string $type The type of global option this is, i.e. component, feature, etc.
  * @param string $page_name The Global Options sub-page name.
  * @param Array  $fields The array of ACF fields to register.
  */
-function register_global_options_page( $page_name, $fields ) {
-	register_options_page( 'Global Options', $page_name, $fields );
+function register_global_options_page( $type, $page_name, $fields ) {
+	register_options_page( 'Global Options', $type, $page_name, $fields );
 }
 
 /**
  * Helper function to register ACF Options page
  *
  * @param string $title The options page name.
+ * @param string $type The type of options page name.
  * @param string $page_name The options sub-page name.
  * @param Array  $fields The array of ACF fields to register.
  */
-function register_options_page( $title, $page_name, $fields ) {
+function register_options_page( $title, $type, $page_name, $fields ) {
+	$type            = ucfirst( $type );
 	$camelized_title = str_replace( ' ', '', lcfirst( ucwords( $title ) ) );
 	$parent_slug     = ucfirst( $camelized_title );
+	$menu_slug       = "$camelized_title$type$page_name";
 	acf_add_options_page(
 		array(
 			'page_title' => $camelized_title,
@@ -42,17 +72,30 @@ function register_options_page( $title, $page_name, $fields ) {
 		array(
 			'page_title'   => $page_name,
 			'menu_title'   => $page_name,
-			'menu_slug'    => "$camelized_title$page_name",
+			'menu_slug'    => $menu_slug,
 			'parent_slug'  => $parent_slug,
 			'show_in_rest' => true,
 		)
 	);
 
+	$fields = array_merge(
+		array(
+			array(
+				'label'     => $title,
+				'name'      => '',
+				'type'      => 'accordion',
+				'placement' => 'left',
+				'endpoint'  => false,
+			),
+		),
+		$fields
+	);
+
 	$field_group = ACFComposer::registerFieldGroup(
 		array(
-			'name'     => "$camelized_title$page_name",
+			'name'     => $menu_slug,
 			'title'    => $title,
-			'fields'   => prefix_fields( $fields, "$camelized_title$page_name" ),
+			'fields'   => prefix_fields( $fields, $menu_slug ),
 			'location' => array(
 				array(
 					array(

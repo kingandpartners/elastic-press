@@ -1,0 +1,9 @@
+{
+  "globalOptions": [
+    {
+      "name": "some_field",
+      "label": "Some Field",
+      "type": "text"
+    }
+  ]
+}

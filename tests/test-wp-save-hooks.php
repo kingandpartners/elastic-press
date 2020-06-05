@@ -7,8 +7,8 @@
 
 use ElasticPress\ElasticSearch;
 use function ElasticPress\ElasticSearch\elasticsearch_find;
-use function Support\AcfOptionsPage\register_global_options_page;
-use function Support\AcfOptionsPage\store_options_page;
+use function ElasticPress\Utils\Options\register_global_options_page;
+use function ElasticPress\Utils\Options\store_options_page;
 use function Support\NavMenus\create_nav_menu;
 
 /**
@@ -43,6 +43,7 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 	 */
 	public function test_acf_save_post() {
 		register_global_options_page(
+			'component',
 			'SomeOptionsPage',
 			array(
 				array(
@@ -52,11 +53,11 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 				),
 			)
 		);
-		store_options_page( 'globalOptionsSomeOptionsPage', 'test_option', 'test' );
+		store_options_page( 'globalOptionsComponentSomeOptionsPage', 'test_option', 'test' );
 		$_POST['acf'] = false;
 		do_action( 'acf/save_post', 'options' );
 		ElasticSearch\Client::update_read_aliases();
-		$found = elasticsearch_find( 'globalOptionsSomeOptionsPage', 'options' );
+		$found = elasticsearch_find( 'globalOptionsComponentSomeOptionsPage', 'options' );
 		$this->assertEquals(
 			$found,
 			array(

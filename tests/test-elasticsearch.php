@@ -12,8 +12,8 @@ use ElasticPress\Sweepers;
 use function ElasticPress\ElasticSearch\elasticsearch_find;
 use function ElasticPress\ElasticSearch\elasticsearch_store;
 use function ElasticPress\ElasticSearch\elasticsearch_where;
-use function Support\AcfOptionsPage\register_global_options_page;
-use function Support\AcfOptionsPage\store_options_page;
+use function ElasticPress\Utils\Options\register_global_options_page;
+use function ElasticPress\Utils\Options\store_options_page;
 use function Support\NavMenus\create_nav_menu;
 
 /**
@@ -149,6 +149,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 */
 	public function test_store_options() {
 		register_global_options_page(
+			'component',
 			'SomePage',
 			array(
 				array(
@@ -158,11 +159,11 @@ class ElasticsearchTest extends WP_UnitTestCase {
 				),
 			)
 		);
-		store_options_page( 'globalOptionsSomePage', 'some_data', 'test' );
+		store_options_page( 'globalOptionsComponentSomePage', 'some_data', 'test' );
 
 		Storage\store_options( 'options' );
 		ElasticSearch\Client::update_read_aliases();
-		$found = elasticsearch_find( 'globalOptionsSomePage', 'options' );
+		$found = elasticsearch_find( 'globalOptionsComponentSomePage', 'options' );
 		$this->assertEquals( $found, array( 'some_data' => 'test' ) );
 	}
 
