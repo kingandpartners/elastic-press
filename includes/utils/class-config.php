@@ -89,7 +89,9 @@ class Config {
 	 */
 	public static function required_constants( $constants ) {
 		foreach ( $constants as $constant ) {
-			define( $constant, getenv( $constant ) );
+			if ( ! defined( $constant ) ) {
+				define( $constant, getenv( $constant ) );
+			}
 			if ( empty( constant( $constant ) ) ) {
 				$msg = sprintf( '%s not defined. Make sure to set %s in your environment.', $constant );
 				trigger_error(
