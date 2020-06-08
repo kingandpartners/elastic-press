@@ -7,6 +7,9 @@
 
 namespace ElasticPress\ElasticSearch;
 
+use ElasticPress\Utils\CustomPostTypes;
+use ElasticPress\Utils\Taxonomy;
+
 /**
  * Client class for interfacing with ElasticSearch
  */
@@ -51,25 +54,14 @@ class Client {
 	 * Sets a specified Elasticsearch index
 	 */
 	public static function indexes() {
-		if ( null === static::$indexes ) {
-			global $wpdb;
-			$posts_indexes = $wpdb->get_results(
-				'SELECT DISTINCT post_type FROM ' . $wpdb->posts
-			);
-			$posts_indexes = array_column( $posts_indexes, 'post_type' );
-			$posts_indexes = array_merge( $posts_indexes, array( 'page', 'post' ) );
-
-			$taxons_indexes = $wpdb->get_results(
-				'SELECT DISTINCT taxonomy FROM ' . $wpdb->term_taxonomy
-			);
-			$taxons_indexes = array_column( $taxons_indexes, 'taxonomy' );
-			$taxons_indexes = array_merge( $taxons_indexes, array( 'category', 'nav_menu' ) );
-			$indexes        = array_merge( $posts_indexes, $taxons_indexes );
-			array_push( $indexes, 'options', 'seo' );
-			$indexes = array_values( array_unique( $indexes ) );
-
-			static::$indexes = apply_filters( 'ep_indicies', $indexes );
+		$indexes = static::$indexes;
+		if ( null === $indexes ) {
+			$indexes    = array( 'post', 'page', 'category', 'nav_menu', 'options', 'seo' );
+			$cpts       = array_keys( CustomPostTypes::registered_post_types() );
+			$taxonomies = array_keys( Taxonomy::registered_taxonomies() );
+			$indexes    = array_unique( array_merge( $indexes, $cpts, $taxonomies ) );
 		}
+		static::$indexes = apply_filters( 'ep_indicies', $indexes );
 		return static::$indexes;
 	}
 

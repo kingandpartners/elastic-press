@@ -43,28 +43,15 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 * Test default indexes
 	 */
 	public function test_default_indexes() {
-		$indexes = array( 'page', 'post', 'category', 'nav_menu', 'options', 'seo' );
-		$this->assertEquals( ElasticSearch\Client::indexes(), $indexes );
+		$indexes = array( 'post', 'page', 'category', 'nav_menu', 'options', 'seo' );
+		$this->assertArraySubset( $indexes, ElasticSearch\Client::indexes() );
 	}
 
 	/**
 	 * Test additional indexes created by custom post types
 	 */
 	public function test_additional_indexes() {
-		register_post_type(
-			'blorgh',
-			array(
-				'label'  => 'Blorgh',
-				'public' => true,
-			)
-		);
-		$content                       = array(
-			'post_title' => 'Some title',
-			'post_type'  => 'blorgh',
-		);
-		$post                          = $this->factory->post->create_and_get( $content );
-		ElasticSearch\Client::$indexes = null;
-		$this->assertContains( 'blorgh', ElasticSearch\Client::indexes() );
+		$this->assertContains( 'experiences', ElasticSearch\Client::indexes() );
 	}
 
 	/**
@@ -112,9 +99,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 * Test store_terms_data
 	 */
 	public function test_store_terms_data() {
-		ElasticSearch\Client::$indexes = null;
-		$taxonomy                      = 'custom_tax';
-		register_taxonomy( $taxonomy, null );
+		$taxonomy = 'experience_category';
 		$this->factory()->term->create_many( 3, array( 'taxonomy' => $taxonomy ) );
 		// since we are adding a custom taxonomy index we need to update the aliases.
 		ElasticSearch\Client::update_write_aliases();

@@ -17,6 +17,7 @@ namespace ElasticPress;
 use ElasticPress\Utils\Config;
 use ElasticPress\Utils\Fields;
 use ElasticPress\Utils\Options;
+use ElasticPress\Utils\CustomPostTypes;
 
 /**
  * Require utility files
@@ -25,6 +26,8 @@ require_once 'includes/utils/class-arrayhelpers.php';
 require_once 'includes/utils/class-inlinesvg.php';
 require_once 'includes/utils/class-filehelpers.php';
 require_once 'includes/utils/class-config.php';
+require_once 'includes/utils/class-customposttypes.php';
+require_once 'includes/utils/class-taxonomy.php';
 require_once 'includes/utils/options.php';
 require_once 'includes/utils/fields.php';
 
@@ -66,6 +69,7 @@ require_once 'includes/wp-save-hooks.php';
  */
 add_action( 'after_setup_theme', __NAMESPACE__ . '\init' );
 add_action( 'after_setup_theme', __NAMESPACE__ . '\load', 100 );
+add_action( 'registered_taxonomy', 'ElasticPress\Utils\Taxonomy::register', 10, 3 );
 
 /**
  * Register files
@@ -79,8 +83,7 @@ function init() {
  * Load fields from registered files
  */
 function load() {
-	// TODO: register custom post types
-	// TODO: register custom taxonomies.
+	CustomPostTypes::register_all();
 	Options\register_global_options();
 	Fields\register_fields();
 	register_php_files();
