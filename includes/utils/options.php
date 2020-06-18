@@ -10,6 +10,7 @@ namespace ElasticPress\Utils\Options;
 
 use ACFComposer\ACFComposer;
 use ElasticPress\Utils\Config;
+use ElasticPress\Utils\StringHelpers;
 
 /**
  * Register global options
@@ -58,50 +59,39 @@ function register_global_options_page( $type, $page_name, $fields ) {
 function register_options_page( $title, $type, $page_name, $fields ) {
 	$type            = ucfirst( $type );
 	$camelized_title = str_replace( ' ', '', lcfirst( ucwords( $title ) ) );
+	$page_title      = StringHelpers::split_camel_case( $page_name );
 	$parent_slug     = ucfirst( $camelized_title );
 	$menu_slug       = "$camelized_title$type$page_name";
 	acf_add_options_page(
 		array(
-			'page_title' => $camelized_title,
-			'menu_title' => $camelized_title,
+			'page_title' => $title,
+			'menu_title' => $title,
 			'menu_slug'  => $parent_slug,
 		)
 	);
 
 	acf_add_options_sub_page(
 		array(
-			'page_title'   => $page_name,
-			'menu_title'   => $page_name,
+			'page_title'   => $page_title,
+			'menu_title'   => $page_title,
 			'menu_slug'    => $menu_slug,
 			'parent_slug'  => $parent_slug,
 			'show_in_rest' => true,
 		)
 	);
 
-	$fields = array_merge(
-		array(
-			array(
-				'label'     => $title,
-				'name'      => '',
-				'type'      => 'accordion',
-				'placement' => 'left',
-				'endpoint'  => false,
-			),
-		),
-		$fields
-	);
-
 	$field_group = ACFComposer::registerFieldGroup(
 		array(
 			'name'     => $menu_slug,
-			'title'    => $title,
+			'title'    => $page_title,
 			'fields'   => prefix_fields( $fields, $menu_slug ),
+			'style'    => 'seamless',
 			'location' => array(
 				array(
 					array(
 						'param'    => 'options_page',
 						'operator' => '==',
-						'value'    => "$camelized_title$page_name",
+						'value'    => $menu_slug,
 					),
 				),
 			),

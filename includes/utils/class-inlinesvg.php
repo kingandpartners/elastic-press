@@ -19,7 +19,9 @@ class InlineSVG {
 	 * @return string
 	 */
 	public static function remote( $remote_url ) {
-		return gzinflate( substr( file_get_contents( $remote_url ), 10, -8 ) );
+		// FIXME: if is gzipped.
+		// return gzinflate( substr( file_get_contents( $remote_url ), 10, -8 ) );
+		return file_get_contents( $remote_url );
 	}
 
 }

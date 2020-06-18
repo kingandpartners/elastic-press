@@ -23,6 +23,7 @@ use ElasticPress\Utils\CustomPostTypes;
  * Require utility files
  */
 require_once 'includes/utils/class-arrayhelpers.php';
+require_once 'includes/utils/class-stringhelpers.php';
 require_once 'includes/utils/class-inlinesvg.php';
 require_once 'includes/utils/class-filehelpers.php';
 require_once 'includes/utils/class-config.php';

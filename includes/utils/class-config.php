@@ -60,7 +60,7 @@ class Config {
 		if ( ! in_array( $file_name, $allowed_files ) ) {
 			return;
 		}
-		if ( ! isset( self::$files[ $file_name ] ) ) {
+		if ( ! isset( self::$files[ $type ][ $file_name ] ) ) {
 			self::$files[ $type ][ $file_name ] = array();
 		}
 

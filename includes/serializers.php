@@ -22,6 +22,7 @@ function page_data( $page ) {
 	$data['url']           = get_the_permalink( $page );
 	$data['page_template'] = get_post_meta( $page->ID, '_wp_page_template', true );
 	$data['blocks']        = parse_gut_blocks( $data['post_content'] );
+	$data                  = array_merge( acf_data( $page->ID ), $data );
 
 	if ( has_post_thumbnail( $page ) ) {
 		$data['featured_image']['type']  = 'image';
@@ -228,7 +229,7 @@ function get_image_array( $thumbnail_id ) {
 	$image['filename'] = basename( $file );
 	$image['filesize'] = image_filesize( $file );
 	$image['alt']      = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
-	$image['srcset']   = wp_get_attachment_image_srcset( $thumbnail_id );
+	$image['srcset']   = wp_get_attachment_image_srcset( $thumbnail_id ) ?? '';
 	foreach ( get_intermediate_image_sizes() as $size ) {
 		$image['sizes'][ $size ] = wp_get_attachment_image_src( $thumbnail_id, $size )[0];
 	}

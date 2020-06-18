@@ -65,6 +65,17 @@ function register_layout( $type, $layout ) {
 	// TODO.
 }
 
+function register_group( $type, $group, $fields, $location ) {
+	$config = array(
+		'name'   => $group['name'],
+		'title'  => $group['title'],
+		'fields' => $fields,
+		'location' => $location
+	);
+
+	ACFComposer::registerFieldGroup( $config );
+}
+
 /**
  * Register fields
  */
@@ -80,7 +91,7 @@ function register_fields() {
 	foreach ( $fields as $type => $configs ) {
 		foreach ( $configs as $config ) {
 			if ( isset( $config['config']['block'] ) ) {
-				Fields\register_block(
+				register_block(
 					$type,
 					$config['config']['block'],
 					$config['config']['fields']
@@ -88,15 +99,16 @@ function register_fields() {
 			}
 
 			if ( isset( $config['config']['group'] ) ) {
-				Fields\register_group(
+				register_group(
 					$type,
 					$config['config']['group'],
-					$config['config']['fields']
+					$config['config']['fields'],
+					$config['config']['location']
 				);
 			}
 
 			if ( isset( $config['config']['layout'] ) ) {
-				Fields\register_layout( $type, $config['config']['layout'] );
+				register_layout( $type, $config['config']['layout'] );
 			}
 		}
 	}
