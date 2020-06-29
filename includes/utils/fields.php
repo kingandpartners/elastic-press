@@ -65,12 +65,21 @@ function register_layout( $type, $layout ) {
 	// TODO.
 }
 
+/**
+ * Register Field Group
+ *
+ * @since 0.1.0
+ * @param string $type The type of layout (component or feature).
+ * @param Array  $group The top-level group config.
+ * @param Array  $fields The fields config.
+ * @param Array  $location The location config.
+ */
 function register_group( $type, $group, $fields, $location ) {
 	$config = array(
-		'name'   => $group['name'],
-		'title'  => $group['title'],
-		'fields' => $fields,
-		'location' => $location
+		'name'     => $group['name'],
+		'title'    => $group['title'],
+		'fields'   => $fields,
+		'location' => $location,
 	);
 
 	ACFComposer::registerFieldGroup( $config );
