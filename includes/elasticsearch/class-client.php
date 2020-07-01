@@ -86,6 +86,14 @@ class Client {
 					'refresh' => true,
 				)
 			);
+			do_action(
+				'ep_elasticsearch_set',
+				array(
+					'index' => $index,
+					'id'    => $id,
+					'value' => $value,
+				)
+			);
 		} catch ( \Exception $e ) {
 			error_log( "Error trying to save record with index: '$index' id: '$id'" );
 
