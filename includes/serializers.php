@@ -10,6 +10,8 @@ namespace ElasticPress\Serializers;
 use function ElasticPress\Acf\parse_acf_field;
 use function ElasticPress\Acf\acf_data;
 use ElasticPress\Utils\ArrayHelpers;
+use function ElasticPress\Acf\get_acf_image;
+use ElasticPress\Utils\InlineSVG;
 
 /**
  * Gathers all page data into easy to access array
@@ -176,7 +178,7 @@ function parse_core_block( $block ) {
 			if ( ! isset( $block['attrs']['id'] ) ) {
 				return;
 			}
-			$data = get_image_array( $block['attrs']['id'] );
+			$data = get_acf_image( $block['attrs']['id'] );
 			$orig = $block['innerHTML'];
 			preg_match( '/alt=("[^"]*")/i', $orig, $alt_matches );
 			if ( count( $alt_matches ) > 1 ) {
@@ -205,7 +207,7 @@ function parse_core_block( $block ) {
 function get_featured_image_obj( $post ) {
 	$image        = array( 'sizes' => array() );
 	$thumbnail_id = get_post_thumbnail_id( $post->ID );
-	return get_image_array( $thumbnail_id );
+	return get_acf_image( $thumbnail_id );
 }
 
 /**
@@ -233,6 +235,10 @@ function get_image_array( $thumbnail_id ) {
 	foreach ( get_intermediate_image_sizes() as $size ) {
 		$image['sizes'][ $size ] = wp_get_attachment_image_src( $thumbnail_id, $size )[0];
 	}
+	if ( isset( $image['post_mime_type'] ) && 'image/svg+xml' === $image['post_mime_type'] ) {
+		$image['raw'] = InlineSVG::remote( $image['url'] );
+	}
+
 	return $image;
 }
 
