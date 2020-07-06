@@ -257,7 +257,7 @@ function image_filesize( $file ) {
 	} else {
 		$filesize = 0;
 	}
-	return $filesize;
+	return (int)$filesize;
 }
 
 /**
