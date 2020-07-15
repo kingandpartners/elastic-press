@@ -150,6 +150,9 @@ function parse_group_field( $field, $value, $data, $base_prefix ) {
 		// FIXME: Why are we using $value? (repeater doesn't).
 		if ( isset( $value[ $sub_field_key ] ) ) {
 			$val = $value[ $sub_field_key ];
+			if ( isset( $val['mime_type'] ) && 'image/svg+xml' === $val['mime_type'] ) {
+				$val['raw'] = InlineSVG::remote( $val['url'] );
+			}
 		} else {
 			$prefix = field_prefix( $base_prefix, $field['name'], $sub_field_key );
 			if ( isset( $data[ $prefix ] ) ) {
