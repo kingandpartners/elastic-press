@@ -194,8 +194,7 @@ class Client {
 				$or_params,
 				function( &$v, $k ) {
 					$values = (array) $v;
-					$keys   = array_fill( 0, count( $values ), $k );
-					$v      = array_map( 'self::map_param', $keys, $values );
+					$v      = self::map_param( $k, $values );
 				}
 			);
 			$query['bool'] = array(
@@ -437,7 +436,7 @@ SOURCE;
 	 * @throws \Exception A general exception.
 	 */
 	private static function read_index_alias( $type ) {
-		if ( ! in_array( $type, self::indexes(), true ) ) {
+		if ( '*' !== $type && ! in_array( $type, self::indexes(), true ) ) {
 			throw new \Exception( $type . ' is not in the $indexes array' );
 		}
 
@@ -459,29 +458,39 @@ SOURCE;
 			array_keys( $value ) !== range( 0, count( $value ) - 1 )
 		);
 		if ( $is_assoc ) {
+			array_walk(
+				$value,
+				function( &$v, $k ) use ( $key ) {
+					$k = ( is_int( $v ) ) ? $k : "$k.keyword";
+					$v = array( 'match' => array( "$key.$k" => $v ) );
+				}
+			);
 			return array(
 				'nested' => array(
 					'path'  => $key,
 					'query' => array(
 						'bool' => array(
-							'must' => array_values(
-								array_walk(
-									$value,
-									function( &$v, $k ) {
-										$k = ( is_int( $value ) ) ? $k : "$k.keyword";
-										$v = array( 'match' => array( "$key.$k" => $v ) );
-									}
-								)
-							),
+							'must' => array_values( $value ),
 						),
 					),
 				),
 			);
 		} else {
-			$key = ( is_int( $value ) ) ? $key : "$key.keyword";
-			return array(
-				'term' => array( $key => $value ),
-			);
+			if ( is_array( $value ) ) {
+				array_walk(
+					$value,
+					function( &$v, $k ) use ( $key ) {
+						$k = ( is_int( $v ) ) ? $key : "$key.keyword";
+						$v = array( 'term' => array( $k => $v ) );
+					}
+				);
+			} else {
+				$key   = ( is_int( $value ) ) ? $key : "$key.keyword";
+				$value = array(
+					'term' => array( $key => $value ),
+				);
+			}
+			return $value;
 		}
 	}
 
