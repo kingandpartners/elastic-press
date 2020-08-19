@@ -239,7 +239,7 @@ function get_image_array( $thumbnail_id ) {
 		$image['raw'] = InlineSVG::remote( $image['url'] );
 	}
 
-	return $image;
+	return apply_filters( 'ep_get_image_array', $image, $attachment );
 }
 
 /**
