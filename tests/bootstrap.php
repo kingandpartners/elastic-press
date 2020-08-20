@@ -30,6 +30,7 @@ function _manually_load_plugin() {
 	require_once 'vendor/autoload.php';
 	require_once 'vendor/mu-plugins/advanced-custom-fields-pro/acf.php';
 	require_once 'vendor/mu-plugins/acf-field-group-composer/acf-field-group-composer.php';
+	require_once 'vendor/mu-plugins/wordpress-seo-premium/wp-seo-premium.php';
 	$root_dir = dirname( dirname( __FILE__ ) );
 	/**
 	 * Expose global env() function from oscarotero/env

@@ -60,6 +60,7 @@ Config::required_directories(
  */
 require_once 'includes/elasticsearch/functions.php';
 require_once 'includes/acf.php';
+require_once 'includes/seo.php';
 require_once 'includes/serializers.php';
 require_once 'includes/storage.php';
 require_once 'includes/sweepers.php';

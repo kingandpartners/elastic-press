@@ -12,6 +12,7 @@ use function ElasticPress\Acf\acf_data;
 use ElasticPress\Utils\ArrayHelpers;
 use function ElasticPress\Acf\get_acf_image;
 use ElasticPress\Utils\InlineSVG;
+use function ElasticPress\Seo\get_seo_data;
 
 /**
  * Gathers all page data into easy to access array
@@ -24,6 +25,7 @@ function page_data( $page ) {
 	$data['url']           = get_the_permalink( $page );
 	$data['page_template'] = get_post_meta( $page->ID, '_wp_page_template', true );
 	$data['blocks']        = parse_gut_blocks( $data['post_content'] );
+	$data['seo']           = get_seo_data( $page->ID, 'post' );
 	$data                  = array_merge( acf_data( $page->ID ), $data );
 
 	if ( has_post_thumbnail( $page ) ) {
@@ -55,6 +57,7 @@ function post_data( $post ) {
 	$data['taxonomies']    = array_map( 'ElasticPress\Serializers\term_data', $terms );
 	$data['comments_open'] = comments_open( $post->ID );
 	$data['edit_lock']     = get_post_meta( $post->ID, '_edit_lock', true );
+	$data['seo']           = get_seo_data( $post->ID, 'post' );
 	$data                  = array_merge( acf_data( $post->ID ), $data );
 
 	if ( has_excerpt( $post->ID ) ) {
@@ -83,6 +86,7 @@ function term_data( $term ) {
 	$data['url']         = get_term_link( $term );
 	$data['post_name']   = $data['slug'];
 	$data['post_status'] = 'publish';
+	$data['seo']         = get_seo_data( $term->term_id, 'term' );
 	$data                = array_merge( acf_data( 'term_' . $term->term_id ), $data );
 	return apply_filters( 'ep_term_data', $data, $term );
 }
@@ -249,7 +253,7 @@ function get_image_array( $thumbnail_id ) {
  * @return int
  */
 function image_filesize( $file ) {
-	if ( strpos( $file, 'http' ) !== false ) {
+	if ( false !== strpos( $file, 'http' ) ) {
 		$head     = array_change_key_case( get_headers( $file, true ) );
 		$filesize = $head['content-length'];
 	} elseif ( file_exists( $file ) ) {
