@@ -325,7 +325,11 @@ SOURCE;
 					),
 					'mappings' => array(
 						'jsondata' => array(
-							'properties' => array(
+							'date_detection' => false,
+							'properties'     => array(
+								'content'    => array(
+									'type' => 'text',
+								),
 								'taxonomies' => array(
 									'type' => 'nested',
 								),
