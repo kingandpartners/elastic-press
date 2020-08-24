@@ -68,7 +68,12 @@ class ArrayHelpers {
 		array_walk_recursive(
 			$array,
 			function( &$value, $key ) {
-				if ( false === $value ) {
+
+				$ignore_keys = array(
+					'enable'
+				);
+
+				if ( !in_array( $key, $ignore_keys ) && false === $value ) {
 					$value = null;
 				}
 
