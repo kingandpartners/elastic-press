@@ -51,3 +51,23 @@ function elasticsearch_where( $index_name, $params = array() ) {
 function elasticsearch_delete_where( $index_name, $params = array() ) {
 	return Client::delete_where( $index_name, $params );
 }
+
+/**
+ * Delete values from Elasticsearch by query params
+ *
+ * @param string $index_name The index identifier.
+ * @param Array  $params Query array of parameters.
+ */
+function elasticsearch_find_by_url( $url ) {
+	return Client::find_by_url( $url );
+}
+
+/**
+ * Delete values from Elasticsearch by query params
+ *
+ * @param string $index_name The index identifier.
+ * @param Array  $params Query array of parameters.
+ */
+function elasticsearch_get_pages() {
+	return Client::get_pages();
+}

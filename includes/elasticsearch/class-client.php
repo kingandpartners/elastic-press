@@ -125,6 +125,78 @@ class Client {
 		}
 	}
 
+	public static function get_pages() {
+		$index_name = self::read_index_alias( '*' );
+		$response = self::client()->search(
+			array(
+				'index' => $index_name,
+				'size' => 10000,
+				'body' => array(
+					'query' => array(
+						'bool' => array(
+							'must' => array(
+								array(
+									'exists' => array(
+										'field' => 'url'
+									)
+								),
+								array(
+									'term' => array(
+										'post_status.keyword' => 'publish'
+									)
+								)
+							),
+							'must_not' => array(
+								'exists' => array(
+									'field' => 'taxonomy'
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+		$results = $response['hits']['hits'];
+		return $results;
+	}
+
+	public static function find_by_url( $input ) {
+		$index_name = self::read_index_alias( '*' );
+
+		$record = null;
+		$urls = array(
+			"$input/",
+			$input
+		);
+		foreach ($urls as $url) {
+			$results = self::client()->search(
+				array(
+					'index' => $index_name,
+					'body'  => array(
+						'query' => array(
+							'term' => array(
+								'url.keyword' => $url
+							)
+						)
+					),
+					'size'  => 1
+				)
+			);
+
+			if ($record = $results['hits']['hits'][0]) break;
+		}
+		return $record;
+	}
+
+// 	private_class_method def self.term_filter(terms)
+//     {
+//       query: {
+//         # Add .keyword to field name for exact matching
+//         term: terms.transform_keys { |key| "#{key}.keyword" }
+//       }
+//     }
+//   end
+
 	/**
 	 * Builds a where query for Elasticsearch
 	 *
