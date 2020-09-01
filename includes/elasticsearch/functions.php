@@ -43,6 +43,16 @@ function elasticsearch_where( $index_name, $params = array() ) {
 }
 
 /**
+ * Retrieve values from Elasticsearch by query params
+ *
+ * @param string $index_name The index identifier.
+ * @param Array  $params Query array of parameters.
+ */
+function elasticsearch_all( $index_name = '*' ) {
+	return Client::all( $index_name );
+}
+
+/**
  * Delete values from Elasticsearch by query params
  *
  * @param string $index_name The index identifier.

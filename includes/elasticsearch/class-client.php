@@ -160,6 +160,19 @@ class Client {
 		return $results;
 	}
 
+	public static function all( $index = '*' ) {
+		$index_name = self::read_index_alias( $index );
+		$response = self::client()->search(
+			array(
+				'index' => $index_name,
+				'size' => 10000,
+				'body' => array()
+			)
+		);
+		$results = $response['hits']['hits'];
+		return $results;
+	}
+
 	public static function find_by_url( $input ) {
 		$index_name = self::read_index_alias( '*' );
 
