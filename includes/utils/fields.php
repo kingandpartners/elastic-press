@@ -108,11 +108,16 @@ function register_fields() {
 			}
 
 			if ( isset( $config['config']['group'] ) ) {
+				if ( isset( $config['config']['location'] ) ) {
+					$location = $config['config']['location'];
+				} else {
+					$location = [];
+				}
 				register_group(
 					$type,
 					$config['config']['group'],
 					$config['config']['fields'],
-					$config['config']['location']
+					$location
 				);
 			}
 
