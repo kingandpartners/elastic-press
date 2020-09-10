@@ -131,7 +131,7 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 
 		$skip_post_exists = get_post( $skip_post->ID);
 		// $skip_post_is_not_indexed = elasticsearch_find( $skip_post->ID, 'do_not_index' );
-		$this->assertEquals( $skip_exists['post_title'], 'This will not be indexed' );
+		$this->assertEquals( $skip_post_exists['post_title'], 'This will not be indexed' );
 		// $this->assertEquals( $skip_is_not_indexed, 'This will not be indexed' );
 	}
 }
