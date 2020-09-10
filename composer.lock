@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "167f6d4b2862b558c03e8bf70e3020d8",
+    "content-hash": "fba1bd0310bee7a195ede4ab044294f7",
     "packages": [
         {
             "name": "advanced-custom-fields/advanced-custom-fields-pro",
@@ -547,68 +547,6 @@
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
-            "name": "j4mie/idiorm",
-            "version": "v1.5.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/j4mie/idiorm.git",
-                "reference": "d23f97053ef5d0b988a02c6a71eb5c6118b2f5b4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/j4mie/idiorm/zipball/d23f97053ef5d0b988a02c6a71eb5c6118b2f5b4",
-                "reference": "d23f97053ef5d0b988a02c6a71eb5c6118b2f5b4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "ext-pdo_sqlite": "*",
-                "phpunit/phpunit": "^4.8"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "idiorm.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-2-Clause",
-                "BSD-3-Clause",
-                "BSD-4-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Jamie Matthews",
-                    "email": "jamie.matthews@gmail.com",
-                    "homepage": "http://j4mie.org",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Simon Holywell",
-                    "email": "treffynnon@php.net",
-                    "homepage": "http://simonholywell.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Durham Hale",
-                    "email": "me@durhamhale.com",
-                    "homepage": "http://durhamhale.com",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "A lightweight nearly-zero-configuration object-relational mapper and fluent query builder for PHP5",
-            "homepage": "http://j4mie.github.com/idiormandparis",
-            "keywords": [
-                "idiorm",
-                "orm",
-                "query builder"
-            ],
-            "time": "2020-04-29T00:37:09+00:00"
-        },
-        {
             "name": "league/oauth2-client",
             "version": "2.5.0",
             "source": {
@@ -1108,61 +1046,6 @@
             "time": "2020-05-12T15:16:56+00:00"
         },
         {
-            "name": "ruckusing/ruckusing-migrations",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ruckus/ruckusing-migrations.git",
-                "reference": "57d6ef2ea89d0c07a38b4697e406734ed7313025"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ruckus/ruckusing-migrations/zipball/57d6ef2ea89d0c07a38b4697e406734ed7313025",
-                "reference": "57d6ef2ea89d0c07a38b4697e406734ed7313025",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
-            },
-            "bin": [
-                "ruckus.php"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Ruckusing": "lib/",
-                    "Task": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Cody Caughlan",
-                    "email": "codycaughlan@gmail.com",
-                    "homepage": "https://github.com/ruckus/ruckusing-migrations/wiki",
-                    "role": "Project lead / Developer"
-                }
-            ],
-            "description": "Framework for generating and managing database migrations",
-            "homepage": "https://github.com/ruckus/ruckusing-migrations",
-            "keywords": [
-                "database",
-                "migrations",
-                "mysql",
-                "postgres",
-                "rake",
-                "ruckusing",
-                "task"
-            ],
-            "time": "2016-05-21T02:31:20+00:00"
-        },
-        {
             "name": "symfony/dependency-injection",
             "version": "v3.4.43",
             "source": {
@@ -1396,78 +1279,6 @@
             "time": "2020-07-14T17:54:18+00:00"
         },
         {
-            "name": "xrstf/composer-php52",
-            "version": "v1.0.20",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer-php52/composer-php52.git",
-                "reference": "bd41459d5e27df8d33057842b32377c39e97a5a8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/composer-php52/composer-php52/zipball/bd41459d5e27df8d33057842b32377c39e97a5a8",
-                "reference": "bd41459d5e27df8d33057842b32377c39e97a5a8",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-default": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "xrstf\\Composer52": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "time": "2016-04-16T21:52:24+00:00"
-        },
-        {
-            "name": "yoast/api-libs",
-            "version": "2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Yoast/api-libs.git",
-                "reference": "e7361081a1d6ae79c0b96c8363379435ea736ef8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://my.yoast.com/packages/dist/yoast/api-libs/yoast-api-libs-e7361081a1d6ae79c0b96c8363379435ea736ef8-zip-1dbe2c.zip",
-                "reference": "e7361081a1d6ae79c0b96c8363379435ea736ef8",
-                "shasum": "911f17e613379e14c0550c6665a522e66e3f844c"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "class-api-libs.php"
-                ]
-            },
-            "license": [
-                "GPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Team Yoast",
-                    "email": "support@yoast.com",
-                    "homepage": "https://yoast.com"
-                }
-            ],
-            "description": "Shared API libraries for Yoast projects.",
-            "homepage": "https://github.com/Yoast/api-libs",
-            "keywords": [
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/Yoast/api-libs/issues",
-                "source": "https://github.com/Yoast/api-libs/tree/2.0"
-            },
-            "time": "2015-07-14T10:25:59+00:00"
-        },
-        {
             "name": "yoast/i18n-module",
             "version": "3.1.1",
             "source": {
@@ -1577,40 +1388,37 @@
         },
         {
             "name": "yoast/wordpress-seo-premium",
-            "version": "11.9",
+            "version": "14.8",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Yoast-dist/wordpress-seo-premium.git",
-                "reference": "12c738d0ab533c1ebbd16c9a4f2e7bca5ce13e6f"
+                "reference": "112dbfbfc73224af1f304b5a502db0edbd5e3bd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://my.yoast.com/packages/dist/yoast/wordpress-seo-premium/yoast-wordpress-seo-premium-12c738d0ab533c1ebbd16c9a4f2e7bca5ce13e6f-zip-ca3b28.zip",
-                "reference": "12c738d0ab533c1ebbd16c9a4f2e7bca5ce13e6f",
-                "shasum": "d4ace7a7c4259b3df054154cfc2784abe8d50ec9"
+                "url": "https://my.yoast.com/packages/dist/yoast/wordpress-seo-premium/yoast-wordpress-seo-premium-112dbfbfc73224af1f304b5a502db0edbd5e3bd0-zip-bd5c6c.zip",
+                "reference": "112dbfbfc73224af1f304b5a502db0edbd5e3bd0",
+                "shasum": "178994bac05a1c12674138aa63c7da8f8e54d5ff"
             },
             "require": {
                 "composer/installers": "~1.0",
-                "j4mie/idiorm": "^1.5",
                 "league/oauth2-client": "^2.4",
-                "php": "^5.6.0||^7.0",
+                "php": "^5.6.20||^7.0",
                 "pimple/pimple": "^3.2",
                 "psr/log": "^1.0",
-                "ruckusing/ruckusing-migrations": "^1.1",
                 "symfony/dependency-injection": "^3.4",
-                "xrstf/composer-php52": "^1.0.20",
-                "yoast/api-libs": "^2.0",
                 "yoast/i18n-module": "^3.1.1",
-                "yoast/license-manager": "1.6.0",
-                "yoast/wp-helpscout": "^2.0"
+                "yoast/license-manager": "1.6.0"
             },
             "require-dev": {
-                "brain/monkey": "^2.2",
-                "humbug/php-scoper": "^0.6.0",
+                "atanamo/php-codeshift": "^1.0",
+                "brain/monkey": "^2.4",
+                "humbug/php-scoper": "^0.12.0",
+                "php-parallel-lint/php-console-highlighter": "^0.5",
+                "php-parallel-lint/php-parallel-lint": "^1.2.0",
                 "phpcompatibility/phpcompatibility-wp": "^2.0.0",
                 "phpunit/phpunit": "^5.7",
                 "symfony/config": "^3.4",
-                "symfony/filesystem": "^3.4",
                 "yoast/php-development-environment": "^1.0",
                 "yoast/yoastcs": "~0.4.3"
             },
@@ -1623,39 +1431,68 @@
                     "deprecated/",
                     "cli/",
                     "premium",
-                    "src/"
+                    "src/",
+                    "lib/"
+                ],
+                "exclude-from-classmap": [
+                    "/**/node_modules/"
                 ]
             },
             "autoload-dev": {
                 "classmap": [
                     "tests/",
-                    "integration-tests/",
                     "config/"
                 ]
             },
             "scripts": {
                 "test": [
-                    "phpunit -c phpunit.xml.dist"
+                    "@php ./vendor/phpunit/phpunit/phpunit"
                 ],
                 "integration-test": [
-                    "phpunit -c phpunit-integration.xml.dist"
+                    "@php ./vendor/phpunit/phpunit/phpunit -c phpunit-integration.xml.dist"
+                ],
+                "lint": [
+                    "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --exclude vendor --exclude vendor_prefixed --exclude node_modules --exclude .git"
+                ],
+                "lint-files": [
+                    "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint"
+                ],
+                "lint-branch": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::lint_branch"
+                ],
+                "lint-staged": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::lint_staged"
+                ],
+                "premium-lint": [
+                    "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint ./wp-seo-premium.php ./tests/unit/load/wp-seo-premium.php ./premium/ ./tests/integration/premium/ ./tests/unit/premium/ -e php"
                 ],
                 "config-yoastcs": [
                     "@php ./vendor/squizlabs/php_codesniffer/scripts/phpcs --config-set installed_paths ../../../vendor/wp-coding-standards/wpcs,../../../vendor/yoast/yoastcs,../../../vendor/phpcompatibility/php-compatibility,../../../vendor/phpcompatibility/phpcompatibility-paragonie,../../../vendor/phpcompatibility/phpcompatibility-wp",
                     "@php ./vendor/squizlabs/php_codesniffer/scripts/phpcs --config-set default_standard Yoast"
                 ],
+                "cs": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::check_coding_standards"
+                ],
                 "check-cs": [
+                    "@check-cs-warnings -n"
+                ],
+                "check-cs-errors": [
+                    "echo You can now just use check-cs, running that command now.",
+                    "composer check-cs"
+                ],
+                "check-cs-warnings": [
                     "@php ./vendor/squizlabs/php_codesniffer/scripts/phpcs"
                 ],
                 "premium-check-cs": [
                     "@before-premium-cs",
-                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --ignore=*/premium/cli/,*/tests/load/wp-seo-premium.php --runtime-set ignore_warnings_on_exit 1",
-                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs ./premium/cli/ --runtime-set testVersion 5.3- --runtime-set ignore_warnings_on_exit 1",
-                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs ./tests/load/wp-seo-premium.php --runtime-set testVersion 5.6- --runtime-set ignore_warnings_on_exit 1",
+                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --runtime-set ignore_warnings_on_exit 1",
                     "@after-premium-cs"
                 ],
-                "check-cs-errors": [
-                    "@php ./vendor/squizlabs/php_codesniffer/scripts/phpcs --error-severity=1 --warning-severity=6"
+                "check-staged-cs": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::check_staged_cs"
+                ],
+                "check-branch-cs": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::check_branch_cs"
                 ],
                 "fix-cs": [
                     "@php ./vendor/squizlabs/php_codesniffer/scripts/phpcbf"
@@ -1666,26 +1503,20 @@
                     "@after-premium-cs"
                 ],
                 "before-premium-cs": [
-                    "composer require --dev yoast/yoastcs:~1.2.1 --update-with-dependencies --no-suggest --no-interaction"
+                    "composer require --dev yoast/yoastcs:~2.0.0 --update-with-dependencies --no-suggest --no-interaction --no-scripts",
+                    "composer config-yoastcs-premium"
+                ],
+                "config-yoastcs-premium": [
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
                 ],
                 "after-premium-cs": [
-                    "composer require --dev yoast/yoastcs:~0.4.3 --update-with-dependencies --no-suggest --no-interaction",
-                    "@php ./scripts/maybe-restore-composer-lock.php",
+                    "composer require --dev yoast/yoastcs:~0.4.3 --update-with-dependencies --no-suggest --no-interaction --no-scripts",
+                    "@php ./config/composer/scripts/maybe-restore-composer-lock.php",
                     "composer config-yoastcs"
                 ],
                 "prefix-dependencies": [
-                    "composer prefix-ruckusing",
-                    "composer prefix-idiorm",
                     "composer prefix-oauth2-client",
-                    "composer prefix-symfony",
-                    "touch ./vendor_prefixed/dependencies-prefixed.txt",
-                    "composer du"
-                ],
-                "prefix-ruckusing": [
-                    "@php ./vendor/humbug/php-scoper/bin/php-scoper add-prefix --prefix=YoastSEO_Vendor --output-dir=./vendor_prefixed/ruckusing --config=config/php-scoper/ruckusing.inc.php --force --quiet"
-                ],
-                "prefix-idiorm": [
-                    "@php ./vendor/humbug/php-scoper/bin/php-scoper add-prefix --prefix=YoastSEO_Vendor --output-dir=./vendor_prefixed/j4mie/idiorm --config=config/php-scoper/idiorm.inc.php --force --quiet"
+                    "composer prefix-symfony"
                 ],
                 "prefix-oauth2-client": [
                     "@php ./vendor/humbug/php-scoper/bin/php-scoper add-prefix --prefix=YoastSEO_Vendor --output-dir=./vendor_prefixed/league/oauth2-client --config=config/php-scoper/oauth2-client.inc.php --force --quiet",
@@ -1695,21 +1526,27 @@
                 "prefix-symfony": [
                     "@php ./vendor/humbug/php-scoper/bin/php-scoper add-prefix --prefix=YoastSEO_Vendor --output-dir=./vendor_prefixed/symfony/dependency-injection --config=config/php-scoper/dependency-injection.inc.php --force --quiet"
                 ],
+                "remove-vendor-prefixed-uses": [
+                    "@php ./vendor/atanamo/php-codeshift/bin/codeshift --mod=config/php-codeshift/remove-vendor-prefixing-codemod.php --src=artifact-composer/src",
+                    "@php ./vendor/atanamo/php-codeshift/bin/codeshift --mod=config/php-codeshift/remove-vendor-prefixing-codemod.php --src=artifact-composer/src/config/migrations",
+                    "@php ./vendor/atanamo/php-codeshift/bin/codeshift --mod=config/php-codeshift/remove-vendor-prefixing-codemod.php --src=artifact-composer/lib"
+                ],
+                "remove-premium-vendor-prefixed-uses": [
+                    "@php ./vendor/atanamo/php-codeshift/bin/codeshift --mod=config/php-codeshift/remove-vendor-prefixing-codemod.php --src=artifact-composer/premium/src",
+                    "@php ./vendor/atanamo/php-codeshift/bin/codeshift --mod=config/php-codeshift/remove-vendor-prefixing-codemod.php --src=artifact-composer/premium/migrations"
+                ],
                 "compile-di": [
                     "rm -f ./src/generated/container.php",
                     "rm -f ./src/generated/container.php.meta",
-                    "composer du",
-                    "Yoast\\WP\\Free\\Composer\\Actions::compile_dependency_injection_container"
-                ],
-                "post-install-cmd": [
-                    "xrstf\\Composer52\\Generator::onPostInstallCmd",
-                    "Yoast\\WP\\Free\\Composer\\Actions::prefix_dependencies"
-                ],
-                "post-update-cmd": [
-                    "xrstf\\Composer52\\Generator::onPostInstallCmd"
+                    "composer du --no-scripts",
+                    "Yoast\\WP\\SEO\\Composer\\Actions::compile_dependency_injection_container"
                 ],
                 "post-autoload-dump": [
-                    "xrstf\\Composer52\\Generator::onPostInstallCmd"
+                    "Yoast\\WP\\SEO\\Composer\\Actions::prefix_dependencies",
+                    "composer compile-di"
+                ],
+                "generate-migration": [
+                    "Yoast\\WP\\SEO\\Composer\\Actions::generate_migration"
                 ]
             },
             "license": [
@@ -1734,47 +1571,7 @@
                 "wiki": "https://github.com/Yoast/wordpress-seo/wiki",
                 "source": "https://github.com/Yoast/wordpress-seo"
             },
-            "time": "2019-08-20T07:59:00+00:00"
-        },
-        {
-            "name": "yoast/wp-helpscout",
-            "version": "2.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Yoast/wp-helpscout.git",
-                "reference": "0d82c3d4077f94495a0d1f6b5c51d171c1434b51"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://my.yoast.com/packages/dist/yoast/wp-helpscout/yoast-wp-helpscout-0d82c3d4077f94495a0d1f6b5c51d171c1434b51-zip-2466e3.zip",
-                "reference": "0d82c3d4077f94495a0d1f6b5c51d171c1434b51",
-                "shasum": "dea6387bebc18ef4a55fb2744fb789893395d182"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ],
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "license": [
-                "GPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Team Yoast",
-                    "email": "support@yoast.com",
-                    "homepage": "https://yoast.com"
-                }
-            ],
-            "description": "A package to integrate the helpscout beacon into WordPress",
-            "support": {
-                "source": "https://github.com/Yoast/wp-helpscout/tree/2.0.5",
-                "issues": "https://github.com/Yoast/wp-helpscout/issues"
-            },
-            "time": "2019-04-18T09:45:54+00:00"
+            "time": "2020-08-18T09:36:59+00:00"
         }
     ],
     "packages-dev": [
