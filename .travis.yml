@@ -13,7 +13,7 @@ env:
     - FRONTEND_PATH=${PWD}/tests/frontend
     - CMS_PATH=${PWD}/tests/cms
     - secure: "a7MYYrKeOVDeTsYxwgwiQPwbIEyk4jfktwdf9yzCb24kh6jw9SNrZb4aENUDNX9X7hMoD8d+tZLvASIn1DcDLAg+PJFlCgxtx/Jo8my5qbOPFaP9T4juRvhVjcktzg0puiEaNkehbzqcFrTMKKZTT2b+I5SYY1F4v3+hrHH0MRK+RZUGCeJUqGjDjOdlMlOghEdB3Q7F0Sr2T6/YtySRqj5IefEwblaebVqo9fk5JzflVGrhlNG4VKP/m1zvijDyvukWO8aJ/xHUaRbfX3dz9OX6tvAJkFGaxXmNnzar0LFhFM7vHigN4pwmv6vy12qL4BkTN7rMkfy7jgFtgdWg8Pmqcl6yAEDr3Fsi6KsC0csKcI8okqieJSOsLwx7jQ6qc1Cq3yebfa+gHHjG28ihZ8XTa01FXRF6sECCgsv4RVC8EQWqCikiBkWiOfYw97eisMNVQUvnmGjcdcXqdjTga7eon7GBjfuK8JcRH73Ea3EuBsqoUSHZY7O8NMjf0Nny+KB/FK7cVRW3gH/38gVMknaacYodmoJMGR+NnlpVrxq431mK0jl+xkpXWAfB15MHmlAqpKRkZ2jmOiYo8Z3xsjV23ni4DUFqHE6hLMgp0I61tBUFVdrdk8/qe9tvZEqpBvVoshypWgSkfR0X4EwuAUaavCvUMh/iBt/LRmuFzSc="
-
+    - secure: "MmeIL1dRrmg4JPXbOHxNixxH9bUGgRSJFqEcXbnFyopDjW8Zvst/fC+186JbZh+8fPafnv26+dxYbdIRC0aRdsxj/fLd9z90dc+ypf5EztB3M0N2p3qrNmW5xKWutZDW8ckttdKrC8BXMiVpPC9XTHksAJgjthryGAyRKKoCuaOYZWuXD642Pk5nhpCbIRWDR56dIiMKZ8HsyhVAWfI7cqN+fs8/Lp39rHtb5Qr1kXvSXu0k8MRit6it343AHK8fCbdwmRCyi00S8TRdPaQglkRNHXjWnMjXk0XNfwuKoBarO7jHVZziE4StB2gYKa6oOB66BIw7jN3CdKAbQ19IaBjk14zzUDclYJQdTKP+5kGaDq7ctzJKqgbgLW/rCPMMYAFGs0yTrO9Mlvzs1fszZhGZK3KYvob4x7PxhH1+60NRujZIvkDSUOigt9htqtncPOGo6RyttDJEe16la0HNIte3gz3wS5c/QjCTEhgaIwVcfjcb4rDqYibxd1hH7X1G2pBCjXg7nAdxw2VeS5dZrC5Ux7lTx4QJe0xOPPxWlObSg1tYrcEVTkRdYz0El6MJre5MZWERKysXSwSW+3UDHk1C+KQguKK/Xl6zGnWPY9Qvovm3uIkmcXScieM0cWyupwKofw3V8zResV5Bx+1F7ifDVJV55/9xENtTGYOlLBM="
 matrix:
   include:
     - php: 7.4
@@ -31,6 +31,7 @@ before_install:
   - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
 
 install:
+  - composer config -g http-basic.my.yoast.com token $YOAST_TOKEN
   - composer install
 
 before_script:
