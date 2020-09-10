@@ -109,7 +109,7 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 			'post_type' => 'skip_post'
 		);
 
-		add_filter('ep_skip_indexing', function($object) {
+		add_filter('ep_insert_post_object_filter', function($object) {
 			$skip_indexing = array(
 				'skip_post'
 			);
