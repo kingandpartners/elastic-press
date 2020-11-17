@@ -9,6 +9,10 @@ namespace ElasticPress\ElasticSearch;
 
 use ElasticPress\Utils\CustomPostTypes;
 use ElasticPress\Utils\Taxonomy;
+use Aws\Credentials\CredentialProvider;
+use Aws\Credentials\Credentials;
+use Aws\ElasticsearchService\ElasticsearchPhpHandler;
+use Elasticsearch\ClientBuilder;
 
 /**
  * Client class for interfacing with ElasticSearch
@@ -43,9 +47,20 @@ class Client {
 	 */
 	public static function client(): \Elasticsearch\Client {
 		if ( null === static::$instance ) {
-			static::$instance = \Elasticsearch\ClientBuilder::create()
-			->setHosts( array( ELASTICSEARCH_URL ) )
-			->build();
+			if ( defined( 'EP_AWS_REGION' ) ) {
+				$provider = CredentialProvider::fromCredentials(
+					new Credentials( EP_AWS_ACCESS_KEY_ID, EP_AWS_SECRET_ACCESS_KEY )
+				);
+				$handler = new ElasticsearchPhpHandler( EP_AWS_REGION, $provider );
+				static::$instance = ClientBuilder::create()
+				->setHandler($handler)
+				->setHosts( array( ELASTICSEARCH_URL ) )
+				->build();
+			} else {
+				static::$instance = ClientBuilder::create()
+				->setHosts( array( ELASTICSEARCH_URL ) )
+				->build();
+			}
 		}
 		return static::$instance;
 	}

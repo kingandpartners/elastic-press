@@ -41,7 +41,9 @@
     "advanced-custom-fields/advanced-custom-fields-pro": "*",
     "flyntwp/acf-field-group-composer": "dev-flattenNestedFilters",
     "elasticsearch/elasticsearch": "^6.1",
-    "yoast/wordpress-seo-premium": "*"
+    "yoast/wordpress-seo-premium": "*",
+    "jsq/amazon-es-php": "^0.3.0",
+    "aws/aws-sdk-php": "^3.161"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5",
@@ -56,6 +58,7 @@
     "installer-paths": {
       "vendor/mu-plugins/{$name}/": [
         "type:wordpress-muplugin",
+        "aws/aws-sdk-php",
         "flyntwp/acf-field-group-composer",
         "advanced-custom-fields/advanced-custom-fields-pro",
         "elasticsearch/elasticsearch",
