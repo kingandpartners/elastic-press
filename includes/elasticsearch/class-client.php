@@ -418,6 +418,9 @@ SOURCE;
 								'taxonomies' => array(
 									'type' => 'nested',
 								),
+								'manufacturer_part_number_data' => array(
+									'type' => 'nested',
+								),
 								'unit_id'    => array(
 									'type' => 'keyword',
 								),
