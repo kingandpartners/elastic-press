@@ -74,15 +74,26 @@ function register_layout( $type, $layout ) {
  * @param Array  $fields The fields config.
  * @param Array  $location The location config.
  */
-function register_group( $type, $group, $fields, $location ) {
-	$config = array(
-		'name'     => $group['name'],
-		'title'    => $group['title'],
-		'fields'   => $fields,
+function register_group( $type, $config ) {
+
+	if ( isset( $config['location'] ) ) {
+		$location = $config['location'];
+	} else {
+		$location = [];
+	}
+
+	$new_config = array(
+		'name'     => $config['group']['name'],
+		'title'    => $config['group']['title'],
+		'fields'   => $config['fields'],
 		'location' => $location,
 	);
 
-	ACFComposer::registerFieldGroup( $config );
+	if ( isset( $config['position'] ) ) {
+		$new_config['position'] = $config['position'];
+	}
+
+	ACFComposer::registerFieldGroup( $new_config );
 }
 
 /**
@@ -108,16 +119,9 @@ function register_fields() {
 			}
 
 			if ( isset( $config['config']['group'] ) ) {
-				if ( isset( $config['config']['location'] ) ) {
-					$location = $config['config']['location'];
-				} else {
-					$location = [];
-				}
 				register_group(
 					$type,
-					$config['config']['group'],
-					$config['config']['fields'],
-					$location
+					$config['config']
 				);
 			}
 
