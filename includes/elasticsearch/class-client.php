@@ -421,6 +421,9 @@ SOURCE;
 								'manufacturer_part_number_data' => array(
 									'type' => 'nested',
 								),
+								'detailed_description_list' => array(
+									'type' => 'nested',
+								),
 								'unit_id'    => array(
 									'type' => 'keyword',
 								),
