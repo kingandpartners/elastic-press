@@ -424,6 +424,9 @@ SOURCE;
 								'detailed_description_list' => array(
 									'type' => 'nested',
 								),
+								'additional_information_list' => array(
+									'type' => 'nested',
+								),
 								'unit_id'    => array(
 									'type' => 'keyword',
 								),
