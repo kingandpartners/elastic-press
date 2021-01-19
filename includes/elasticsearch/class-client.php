@@ -427,6 +427,9 @@ SOURCE;
 								'additional_information_list' => array(
 									'type' => 'nested',
 								),
+								'images' => array(
+									'type' => 'nested',
+								),
 								'unit_id'    => array(
 									'type' => 'keyword',
 								),
