@@ -96,4 +96,42 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 		$this->assertEquals( $found['menu_items'][0]['url'], 'http://test.com' );
 	}
 
+	/**
+	 * Test ep_skip_indexing filter
+	 */
+	public function test_ep_skip_indexing_filter() {
+		$post_content = array(
+			'post_title' => 'This will be indexed',
+			'post_type' => 'post'
+		);
+		$skip_post_content = array(
+			'post_title' => 'This will not be indexed',
+			'post_type' => 'skip_post'
+		);
+
+		add_filter('ep_insert_post_object_filter', function($object) {
+			$skip_indexing = array(
+				'skip_post'
+			);
+			if (in_array($object->post_type, $skip_indexing)) {
+				$object->skip_indexing = true;
+			}
+			return $object;
+		}, 10, 2);
+
+		$post = $this->factory->post->create_and_get( $post_content );
+		do_action( 'wp_insert_post', $post->ID, $post, true );
+
+		$skip_post = $this->factory->post->create_and_get( $skip_post_content );
+		do_action( 'wp_insert_post', $skip_post->ID, $skip_post, true );
+
+		ElasticSearch\Client::update_read_aliases();
+		$found_post = elasticsearch_find( $post->ID, 'post' );
+		$this->assertEquals( $found_post['post_title'], 'This will be indexed' );
+
+		$skip_post_exists = get_post( $skip_post->ID);
+		// $skip_post_is_not_indexed = elasticsearch_find( $skip_post->ID, 'do_not_index' );
+		$this->assertEquals( $skip_post_exists['post_title'], 'This will not be indexed' );
+		// $this->assertEquals( $skip_is_not_indexed, 'This will not be indexed' );
+	}
 }
