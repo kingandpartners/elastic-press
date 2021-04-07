@@ -247,6 +247,11 @@ class Client {
 		// Scope queries by published status.
 		$status = isset( $params['post_status'] ) ? $params['post_status'] : 'publish';
 		$params = array_merge( $params, array( 'post_status' => $status ) );
+		$sort   = isset( $params['sort'] ) ? $params['sort'] : null;
+		$range  = isset( $params['range'] ) ? $params['range'] : null;
+		$from   = isset( $params['from'] ) ? $params['from'] : 0;
+		$size   = isset( $params['size'] ) ? $params['size'] : 10000;
+		unset( $params['sort'], $params['range'], $params['from'], $params['size'] );
 
 		// Convert `id` fields into integers.
 		array_walk(
@@ -280,13 +285,6 @@ class Client {
 			ARRAY_FILTER_USE_BOTH
 		);
 
-		$sort_param = null;
-		foreach ( $id_params as $key => $val ) {
-			if ( is_array( $val ) ) {
-				$sort_param = array( $key, $val );
-			}
-		}
-
 		$query = array( 'bool' => array() );
 
 		if ( ! empty( $or_params ) ) {
@@ -303,6 +301,7 @@ class Client {
 			);
 		}
 
+		$must_params = array();
 		if ( ! empty( $and_params ) ) {
 			array_walk(
 				$and_params,
@@ -310,17 +309,33 @@ class Client {
 					$v = self::map_param( $k, $v );
 				}
 			);
+			$must_params = $and_params;
+		}
+
+		if ( ! empty( $range ) ) {
+			array_push( $must_params, array( 'range' => $range ) );
+		}
+
+		if ( ! empty( $must_params ) ) {
 			$query['bool'] = array_merge(
 				$query['bool'],
 				array(
-					'must' => array_values( $and_params ),
+					'must' => array_values( $must_params ),
 				)
 			);
 		}
 
 		$body = array( 'query' => $query );
 
-		if ( ! empty( $sort_param ) ) {
+		$sort_param = null;
+		foreach ( $id_params as $key => $val ) {
+			if ( is_array( $val ) ) {
+				$sort_param = array( $key, $val );
+			}
+		}
+		if ( ! empty( $sort ) ) {
+		    $body['sort'] = $sort;
+		} elseif ( ! empty( $sort_param ) ) {
 			list( $key, $ids ) = $sort_param;
 			$script            = self::painless_script( $key );
 			$body['sort']      = array(
@@ -341,7 +356,8 @@ class Client {
 		return array(
 			'index' => $index_name,
 			'body'  => $body,
-			'size'  => 10000,
+			'size'  => $size,
+			'from'  => $from
 		);
 	}
 
@@ -427,24 +443,35 @@ SOURCE;
 						'jsondata' => array(
 							'date_detection' => false,
 							'properties'     => array(
-								'content'    => array(
+								'content'       => array(
 									'type' => 'text',
 								),
-								'taxonomies' => array(
+								'taxonomies'    => array(
 									'type' => 'nested',
 								),
-								'unit_id'    => array(
+								'unit_id'       => array(
 									'type' => 'keyword',
 								),
-								'ID'         => array(
+								'ID'            => array(
 									'type' => 'keyword',
 								),
-								'id'         => array(
+								'id'            => array(
 									'type' => 'keyword',
 								),
-								'post_id'    => array(
+								'post_id'       => array(
 									'type' => 'keyword',
 								),
+								'term_id'       => array(
+									'type' => 'keyword',
+								),
+								'post_date'     => array(
+									'type'   => 'date',
+									'format' => 'yyyy-MM-dd HH:mm:ss'
+								),
+								'post_modified' => array(
+									'type'   => 'date',
+									'format' => 'yyyy-MM-dd HH:mm:ss'
+								)
 							),
 						),
 					),
