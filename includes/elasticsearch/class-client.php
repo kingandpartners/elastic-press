@@ -142,6 +142,7 @@ class Client {
 
 	public static function get_pages() {
 		$index_name = self::read_index_alias( '*' );
+		$public_types = array_keys( get_post_types( array( 'public' => true ) ) );
 		$response = self::client()->search(
 			array(
 				'index' => $index_name,
@@ -158,6 +159,11 @@ class Client {
 								array(
 									'term' => array(
 										'post_status.keyword' => 'publish'
+									)
+								),
+								array(
+									'terms' => array(
+										'post_type.keyword' => $public_types
 									)
 								)
 							),
@@ -215,15 +221,6 @@ class Client {
 		}
 		return $record;
 	}
-
-// 	private_class_method def self.term_filter(terms)
-//     {
-//       query: {
-//         # Add .keyword to field name for exact matching
-//         term: terms.transform_keys { |key| "#{key}.keyword" }
-//       }
-//     }
-//   end
 
 	/**
 	 * Builds a where query for Elasticsearch
@@ -429,6 +426,41 @@ SOURCE;
 					self::client()->indices()->delete( array( 'index' => $old_index ) );
 				}
 			}
+			$mappings = array(
+				'date_detection' => false,
+				'properties'     => array(
+					'content'       => array(
+						'type' => 'text',
+					),
+					'taxonomies'    => array(
+						'type' => 'nested',
+					),
+					'unit_id'       => array(
+						'type' => 'keyword',
+					),
+					'ID'            => array(
+						'type' => 'keyword',
+					),
+					'id'            => array(
+						'type' => 'keyword',
+					),
+					'post_id'       => array(
+						'type' => 'keyword',
+					),
+					'term_id'       => array(
+						'type' => 'keyword',
+					),
+					'post_date'     => array(
+						'type'   => 'date',
+						'format' => 'yyyy-MM-dd HH:mm:ss'
+					),
+					'post_modified' => array(
+						'type'   => 'date',
+						'format' => 'yyyy-MM-dd HH:mm:ss'
+					)
+				),
+			);
+			$mappings = apply_filters( 'ep_mappings', $mappings, $index_type );
 			$params = array(
 				'index' => $new_index,
 				'body'  => array(
@@ -440,40 +472,7 @@ SOURCE;
 						),
 					),
 					'mappings' => array(
-						'jsondata' => array(
-							'date_detection' => false,
-							'properties'     => array(
-								'content'       => array(
-									'type' => 'text',
-								),
-								'taxonomies'    => array(
-									'type' => 'nested',
-								),
-								'unit_id'       => array(
-									'type' => 'keyword',
-								),
-								'ID'            => array(
-									'type' => 'keyword',
-								),
-								'id'            => array(
-									'type' => 'keyword',
-								),
-								'post_id'       => array(
-									'type' => 'keyword',
-								),
-								'term_id'       => array(
-									'type' => 'keyword',
-								),
-								'post_date'     => array(
-									'type'   => 'date',
-									'format' => 'yyyy-MM-dd HH:mm:ss'
-								),
-								'post_modified' => array(
-									'type'   => 'date',
-									'format' => 'yyyy-MM-dd HH:mm:ss'
-								)
-							),
-						),
+						'jsondata' => $mappings,
 					),
 				),
 			);
