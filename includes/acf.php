@@ -11,6 +11,7 @@ use ElasticPress\Utils\ArrayHelpers;
 use ElasticPress\Utils\InlineSVG;
 use function ElasticPress\Serializers\post_data;
 use function ElasticPress\Serializers\get_image_array;
+use function ElasticPress\Serializers\term_data;
 
 /**
  * Convert raw ACF data into nested fields
