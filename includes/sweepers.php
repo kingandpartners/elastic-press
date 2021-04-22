@@ -99,7 +99,6 @@ function sweep_menu_cache() {
 function sweep_taxonomy() {
 	$taxonomies = get_taxonomies(
 		array(
-			'public'   => true,
 			'_builtin' => false,
 		)
 	);
