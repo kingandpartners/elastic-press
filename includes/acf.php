@@ -147,10 +147,9 @@ function parse_group_field( $field, $value, $data, $base_prefix ) {
 
 	foreach ( $sub_fields as $sub_field ) {
 		$sub_field_key = $sub_field['name'];
+
 		// FIXME: Why are we using $value? (repeater doesn't).
-		if ( in_array( $sub_field['type'], array( 'link' ) ) ) {
-			$val = parse_acf_field($sub_field, $sub_field['value']);
-		} else if ( isset( $value[ $sub_field_key ] ) ) {
+		if ( isset( $value[ $sub_field_key ] ) ) {
 			$val = $value[ $sub_field_key ];
 			if ( isset( $val['mime_type'] ) && 'image/svg+xml' === $val['mime_type'] ) {
 				$val['raw'] = InlineSVG::remote( $val['url'] );
@@ -200,6 +199,7 @@ function acf_data( $id ) {
 			$data = array_merge( $data, parse_page_blocks( $field ) );
 		}
 	}
+
 	return ArrayHelpers::convert_false_to_null( $data );
 }
 
@@ -211,22 +211,7 @@ function acf_data( $id ) {
  */
 function parse_page_blocks( $field ) {
 	$module = $field['value'];
-
 	switch ( true ) {
-		case ( is_array( $module ) && $field['type'] === 'flexible_content' ):
-			$data = array();
-			foreach ($module as $m) {
-				foreach ($m as $k => $mod) {
-					if ('acf_fc_layout' === $k) continue;
-					$f = acf_get_field($k);
-					if ($k === 'copy') {
-						$data[$k] = $mod;
-					} else {
-						$data[$k] = parse_acf_field( $f, $mod );
-					}
-				}
-			}
-			break;
 		case ( is_array( $module ) ):
 			$data = parse_acf_field( $field, $module );
 			break;
