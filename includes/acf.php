@@ -73,6 +73,7 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 					}
 					$data[$index][$k] = parse_acf_field( $f, $mod, $data, $base_prefix );
 				}
+				$data[$index]['acf_fc_layout'] = $m['acf_fc_layout'];
 			}
 			$value = $data;
 			break;
