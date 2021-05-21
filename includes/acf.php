@@ -56,24 +56,33 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 			break;
 		case 'flexible_content':
 			$data = array();
-			foreach ($value as $index => $m) {
-				foreach ($m as $k => $mod) {
-					if ('acf_fc_layout' === $k) continue;
-					$layout_idx       = array_search($m['acf_fc_layout'], array_column($field['layouts'], 'name'));
-					$layout           = $field['layouts'][$layout_idx];
-					$f                = false;
-					$idx              = 0;
-					$keys             = array(
-						$layout['key'] . "_$k",
-						str_replace('layout', 'field', $layout['name'] . "_$k")
-					);
-					foreach( $keys as $key) {
-						$f = acf_get_field( $key );
-						if ($f !== false) break;
+			foreach ( $value as $index => $m ) {
+				$layout_idx = array_search( $m['acf_fc_layout'], array_column( $field['layouts'], 'name' ) );
+				$layout     = $field['layouts'][ $layout_idx ];
+				$idx        = 0;
+				foreach ( $m as $k => $mod ) {
+					if ( 'acf_fc_layout' === $k ) {
+						continue;
 					}
-					$data[$index][$k] = parse_acf_field( $f, $mod, $data, $base_prefix );
+					$f    = false;
+					$keys = array(
+						$layout['key'] . "_$k",
+						str_replace( 'layout', 'field', $layout['name'] . "_$k" ),
+						$layout['key'] . '_' . $layout['name'],
+					);
+					foreach ( $keys as $key ) {
+						if ( false !== $f ) {
+							break;
+						}
+						$f = acf_get_field( $key );
+					}
+					if ( 'clone' === $f['type'] ) {
+						$f = $f['sub_fields'][ $idx ];
+					}
+					$data[ $index ][ $k ] = parse_acf_field( $f, $mod, $data, $base_prefix );
+					$idx++;
 				}
-				$data[$index]['acf_fc_layout'] = $m['acf_fc_layout'];
+				$data[ $index ]['acf_fc_layout'] = $m['acf_fc_layout'];
 			}
 			$value = $data;
 			break;
@@ -170,19 +179,19 @@ function parse_group_field( $field, $value, $data, $base_prefix ) {
 
 	foreach ( $sub_fields as $sub_field ) {
 		$sub_field_key = $sub_field['name'];
-		$prefix = field_prefix( $base_prefix, $field['name'], $sub_field_key );
+		$prefix        = field_prefix( $base_prefix, $field['name'], $sub_field_key );
 
 		// FIXME: Why are we using $value? (repeater doesn't).
-		if ( in_array( $sub_field['type'], array( 'link' ) ) ) {
-			$val = parse_acf_field($sub_field, $value[$sub_field['name']], $data, $prefix);
-		} else if ( isset( $value[ $sub_field_key ] ) ) {
-			$val = $value[ $sub_field_key ];
+		if ( isset( $value[ $sub_field_key ] ) ) {
+			$val = parse_acf_field( $sub_field, $value[ $sub_field_key ], $data, $prefix );
 			if ( isset( $val['mime_type'] ) && 'image/svg+xml' === $val['mime_type'] ) {
 				$val['raw'] = InlineSVG::remote( $val['url'] );
 			}
 		} else {
 			if ( isset( $data[ $prefix ] ) ) {
 				$val = parse_acf_field( $sub_field, $data[ $prefix ], $data, $prefix );
+			} elseif ( 'link' === $sub_field['type'] && isset( $value[ $sub_field['name'] ] ) ) {
+				$val = parse_acf_field( $sub_field, $value[ $sub_field['name'] ], $data, $prefix );
 			} else {
 				$val = $value;
 			}
