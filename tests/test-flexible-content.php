@@ -23,10 +23,10 @@ class FlexibleContentTest extends WP_UnitTestCase {
 				'title'    => 'Flex Components',
 				'fields'   => array(
 					array(
-						'name'       => 'components',
-						'label'      => 'Components',
-						'type'       => 'flexible_content',
-						'layouts'    => array(
+						'name'    => 'components',
+						'label'   => 'Components',
+						'type'    => 'flexible_content',
+						'layouts' => array(
 							array(
 								'name'       => 'callout',
 								'label'      => 'Callout',
@@ -36,16 +36,16 @@ class FlexibleContentTest extends WP_UnitTestCase {
 									array(
 										'name'  => 'title',
 										'label' => 'Title',
-										'type'  => 'text'	
+										'type'  => 'text',
 									),
 									array(
 										'name'  => 'cta',
 										'label' => 'CTA',
-										'type'  => 'link'
-									)
-								)
-							)
-						)
+										'type'  => 'link',
+									),
+								),
+							),
+						),
 					),
 				),
 				'location' => array(
@@ -74,20 +74,20 @@ class FlexibleContentTest extends WP_UnitTestCase {
 	 * Test default page serialization
 	 */
 	public function test_flexible_content_serialization() {
-		$content = array(
+		$content    = array(
 			'post_title' => 'Title',
 			'meta_input' => array(
 				'_wp_page_template' => 'flex_components',
-			)
+			),
 		);
 		$components = array(
 			array(
 				'title'         => 'Test Title',
 				'cta'           => null,
-				'acf_fc_layout' => 'callout'
-			)
+				'acf_fc_layout' => 'callout',
+			),
 		);
-		$page = $this->factory->post->create_and_get( $content );
+		$page       = $this->factory->post->create_and_get( $content );
 		update_field( 'field_flex_components_components', $components, $page->ID );
 		$result = Serializers\page_data( $page );
 

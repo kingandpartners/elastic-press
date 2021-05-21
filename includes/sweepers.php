@@ -61,11 +61,12 @@ function sweep_posts() {
 
 	$ignore_post_types = array(
 		'acf-field-group',
-		'acf-field'
+		'acf-field',
 	);
 	foreach ( $ignore_post_types as $post_type ) {
-		if ( ( $key = array_search($post_type, $post_types) ) !== false ) {
-			unset( $post_types[$key] );
+		$key = array_search( $post_type, $post_types );
+		if ( false !== $key ) {
+			unset( $post_types[ $key ] );
 		}
 	}
 

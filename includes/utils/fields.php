@@ -70,16 +70,13 @@ function register_layout( $type, $layout ) {
  *
  * @since 0.1.0
  * @param string $type The type of layout (component or feature).
- * @param Array  $group The top-level group config.
- * @param Array  $fields The fields config.
- * @param Array  $location The location config.
+ * @param Array  $config The top-level group config.
  */
 function register_group( $type, $config ) {
-
 	if ( isset( $config['location'] ) ) {
 		$location = $config['location'];
 	} else {
-		$location = [];
+		$location = array();
 	}
 
 	$new_config = array(

@@ -39,11 +39,11 @@ function store_post( $post ) {
  * @param WP_Term $menu The menu (term) object.
  */
 function store_menu( $menu ) {
-	$key      = $menu->slug . '_nav';
-	$items    = wp_get_nav_menu_items( $menu->name );
-	$data     = term_data( $menu );
+	$key                = $menu->slug . '_nav';
+	$items              = wp_get_nav_menu_items( $menu->name );
+	$data               = term_data( $menu );
 	$data['menu_items'] = array_map( 'ElasticPress\Serializers\nav_map', $items );
-	$type = $menu->taxonomy;
+	$type               = $menu->taxonomy;
 	ElasticSearch\elasticsearch_store( $key, $type, $data );
 }
 

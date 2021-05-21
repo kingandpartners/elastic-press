@@ -48,12 +48,12 @@ class Client {
 	public static function client(): \Elasticsearch\Client {
 		if ( null === static::$instance ) {
 			if ( defined( 'EP_AWS_REGION' ) ) {
-				$provider = CredentialProvider::fromCredentials(
+				$provider         = CredentialProvider::fromCredentials(
 					new Credentials( EP_AWS_ACCESS_KEY_ID, EP_AWS_SECRET_ACCESS_KEY )
 				);
-				$handler = new ElasticsearchPhpHandler( EP_AWS_REGION, $provider );
+				$handler          = new ElasticsearchPhpHandler( EP_AWS_REGION, $provider );
 				static::$instance = ClientBuilder::create()
-				->setHandler($handler)
+				->setHandler( $handler )
 				->setHosts( array( ELASTICSEARCH_URL ) )
 				->build();
 			} else {
@@ -140,84 +140,101 @@ class Client {
 		}
 	}
 
+	/**
+	 * Gets all published documents with a url, a.k.a. pages
+	 */
 	public static function get_pages() {
-		$index_name = self::read_index_alias( '*' );
+		$index_name   = self::read_index_alias( '*' );
 		$public_types = array_keys( get_post_types( array( 'public' => true ) ) );
-		$response = self::client()->search(
+		$response     = self::client()->search(
 			array(
 				'index' => $index_name,
-				'size' => 10000,
-				'body' => array(
+				'size'  => 10000,
+				'body'  => array(
 					'query' => array(
 						'bool' => array(
-							'must' => array(
+							'must'     => array(
 								array(
 									'exists' => array(
-										'field' => 'url'
-									)
+										'field' => 'url',
+									),
 								),
 								array(
 									'term' => array(
-										'post_status.keyword' => 'publish'
-									)
+										'post_status.keyword' => 'publish',
+									),
 								),
 								array(
 									'terms' => array(
-										'post_type.keyword' => $public_types
-									)
-								)
+										'post_type.keyword' => $public_types,
+									),
+								),
 							),
 							'must_not' => array(
 								'exists' => array(
-									'field' => 'taxonomy'
-								)
-							)
-						)
-					)
-				)
+									'field' => 'taxonomy',
+								),
+							),
+						),
+					),
+				),
 			)
 		);
-		$results = $response['hits']['hits'];
+		$results      = $response['hits']['hits'];
 		return $results;
 	}
 
+	/**
+	 * Gets all documents of a given index - all indicies by default
+	 *
+	 * @param string $index (optional) The index for lookup.
+	 */
 	public static function all( $index = '*' ) {
 		$index_name = self::read_index_alias( $index );
-		$response = self::client()->search(
+		$response   = self::client()->search(
 			array(
 				'index' => $index_name,
-				'size' => 10000,
-				'body' => array()
+				'size'  => 10000,
+				'body'  => array(),
 			)
 		);
-		$results = $response['hits']['hits'];
+		$results    = $response['hits']['hits'];
 		return $results;
 	}
 
+	/**
+	 * Finds a document by url
+	 *
+	 * @param string $input The url for lookup.
+	 */
 	public static function find_by_url( $input ) {
 		$index_name = self::read_index_alias( '*' );
 
 		$record = null;
-		$urls = array(
+		$urls   = array(
 			"$input/",
-			$input
+			$input,
 		);
-		foreach ($urls as $url) {
+		foreach ( $urls as $url ) {
 			$results = self::client()->search(
 				array(
 					'index' => $index_name,
 					'body'  => array(
 						'query' => array(
 							'term' => array(
-								'url.keyword' => $url
-							)
-						)
+								'url.keyword' => $url,
+							),
+						),
 					),
-					'size'  => 1
+					'size'  => 1,
 				)
 			);
 
-			if ($record = $results['hits']['hits'][0]) break;
+			$record = $results['hits']['hits'][0];
+
+			if ( $record ) {
+				break;
+			}
 		}
 		return $record;
 	}
@@ -331,7 +348,7 @@ class Client {
 			}
 		}
 		if ( ! empty( $sort ) ) {
-		    $body['sort'] = $sort;
+			$body['sort'] = $sort;
 		} elseif ( ! empty( $sort_param ) ) {
 			list( $key, $ids ) = $sort_param;
 			$script            = self::painless_script( $key );
@@ -354,7 +371,7 @@ class Client {
 			'index' => $index_name,
 			'body'  => $body,
 			'size'  => $size,
-			'from'  => $from
+			'from'  => $from,
 		);
 	}
 
@@ -452,16 +469,16 @@ SOURCE;
 					),
 					'post_date'     => array(
 						'type'   => 'date',
-						'format' => 'yyyy-MM-dd HH:mm:ss'
+						'format' => 'yyyy-MM-dd HH:mm:ss',
 					),
 					'post_modified' => array(
 						'type'   => 'date',
-						'format' => 'yyyy-MM-dd HH:mm:ss'
-					)
+						'format' => 'yyyy-MM-dd HH:mm:ss',
+					),
 				),
 			);
 			$mappings = apply_filters( 'ep_mappings', $mappings, $index_type );
-			$params = array(
+			$params   = array(
 				'index' => $new_index,
 				'body'  => array(
 					'settings' => array(
