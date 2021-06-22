@@ -424,6 +424,7 @@ SOURCE;
 	public static function delete_where( $index, $params ) {
 		$index_name   = self::read_index_alias( $index );
 		$query_params = self::where_query( $index, $params );
+		unset( $query_params['from'] );
 		self::client()->deleteByQuery( $query_params );
 	}
 
