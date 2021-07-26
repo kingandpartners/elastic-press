@@ -25,7 +25,10 @@ function get_yoast_head( $id, $type ) {
 	} else {
 		$context = $action->for_post( $id );
 	}
-	$head = $context->head;
+	// v15 of Yoast uses "head" and v16+ uses "html"
+	// in order to keep both versions working simultaneously we use the
+	// Null Coalescing Operator (??)
+	$head = $context->head ?? $context->html;
 	return $head;
 }
 
