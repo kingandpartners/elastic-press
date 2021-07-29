@@ -90,10 +90,10 @@ function get_seo_data( $id, $type ) {
 				$piece[ $key ] = $attribute;
 			}
 		}
-		if ( preg_match( "/title/", $piece['property'] ) ) {
+		if ( isset( $piece['property'] ) && preg_match( "/title/", $piece['property'] ) ) {
 			$piece['content'] = $title;
 		}
-		if ( preg_match( "/description/", $piece['property'] ) ) {
+		if ( isset( $piece['property'] ) && preg_match( "/description/", $piece['property'] ) ) {
 			$piece['content'] = $description;
 		}
 		array_push( $meta, $piece );
