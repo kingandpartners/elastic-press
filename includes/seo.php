@@ -33,6 +33,38 @@ function get_yoast_head( $id, $type ) {
 }
 
 /**
+* Get Yoast title
+*
+* @param String $id The id for the data.
+* @param String $type The type of post.
+* @return String $title
+*/
+function get_yoast_title( $id, $type ) {
+    if ( 'term' === $type ) {
+		$context = YoastSEO()->meta->for_term( $id );
+    } else {
+		$context = YoastSEO()->meta->for_post( $id );
+    }
+    return $context->title;
+}
+
+/**
+* Get Yoast description
+*
+* @param String $id The id for the data.
+* @param String $type The type of post.
+* @return String $description
+*/
+function get_yoast_description( $id, $type ) {
+    if ( 'term' === $type ) {
+		$context = YoastSEO()->meta->for_term( $id );
+    } else {
+		$context = YoastSEO()->meta->for_post( $id );
+    }
+    return $context->description;
+}
+
+/**
  * Serialize SEO data from Yoast
  *
  * @param String $id The id for the data.
@@ -44,30 +76,34 @@ function get_seo_data( $id, $type ) {
 	$head = get_yoast_head( $id, $type );
 	$doc  = new \DOMDocument();
 	$doc->loadHTML( $head );
-	$tags    = $doc->getElementsByTagName( 'meta' );
-	$scripts = $doc->getElementsByTagName( 'script' );
-	$title   = null;
-	$meta    = array();
+	$tags        = $doc->getElementsByTagName( 'meta' );
+	$scripts     = $doc->getElementsByTagName( 'script' );
+	$title       = get_yoast_title( $id, $type );
+	$description = get_yoast_description( $id, $type );
+	$meta        = array();
 
 	foreach ( $tags as $tag ) {
 		$piece = array();
 		foreach ( $keys as $key ) {
 			if ( $tag->hasAttribute( $key ) ) {
 				$attribute = $tag->getAttribute( $key );
-				if ( 'property' === $key && 'og:title' === $attribute ) {
-					$title = $tag->getAttribute( 'content' );
-				}
 				$piece[ $key ] = $attribute;
 			}
+		}
+		if ( preg_match( "/title/", $piece['property'] ) ) {
+			$piece['content'] = $title;
+		}
+		if ( preg_match( "/description/", $piece['property'] ) ) {
+			$piece['content'] = $description;
 		}
 		array_push( $meta, $piece );
 	}
 
 	$output = array( 'meta' => $meta );
 
-	if ( $title ) {
-		$output['title'] = $title;
-	}
+	if ( $title )       $output['title']       = $title;
+	if ( $description ) $output['description'] = $description;
+
 	if ( $scripts[0] ) {
 		$output['schema'] = $scripts[0]->nodeValue;
 	}
