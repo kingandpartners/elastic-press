@@ -33,35 +33,35 @@ function get_yoast_head( $id, $type ) {
 }
 
 /**
-* Get Yoast title
-*
-* @param String $id The id for the data.
-* @param String $type The type of post.
-* @return String $title
-*/
+ * Get Yoast title
+ *
+ * @param String $id The id for the data.
+ * @param String $type The type of post.
+ * @return String $title
+ */
 function get_yoast_title( $id, $type ) {
-    if ( 'term' === $type ) {
+	if ( 'term' === $type ) {
 		$context = YoastSEO()->meta->for_term( $id );
-    } else {
+	} else {
 		$context = YoastSEO()->meta->for_post( $id );
-    }
-    return $context->title;
+	}
+	return $context->title;
 }
 
 /**
-* Get Yoast description
-*
-* @param String $id The id for the data.
-* @param String $type The type of post.
-* @return String $description
-*/
+ * Get Yoast description
+ *
+ * @param String $id The id for the data.
+ * @param String $type The type of post.
+ * @return String $description
+ */
 function get_yoast_description( $id, $type ) {
-    if ( 'term' === $type ) {
+	if ( 'term' === $type ) {
 		$context = YoastSEO()->meta->for_term( $id );
-    } else {
+	} else {
 		$context = YoastSEO()->meta->for_post( $id );
-    }
-    return $context->description;
+	}
+	return $context->description;
 }
 
 /**
@@ -86,14 +86,14 @@ function get_seo_data( $id, $type ) {
 		$piece = array();
 		foreach ( $keys as $key ) {
 			if ( $tag->hasAttribute( $key ) ) {
-				$attribute = $tag->getAttribute( $key );
+				$attribute     = $tag->getAttribute( $key );
 				$piece[ $key ] = $attribute;
 			}
 		}
-		if ( isset( $piece['property'] ) && preg_match( "/title/", $piece['property'] ) ) {
+		if ( isset( $piece['property'] ) && preg_match( '/title/', $piece['property'] ) ) {
 			$piece['content'] = $title;
 		}
-		if ( isset( $piece['property'] ) && preg_match( "/description/", $piece['property'] ) ) {
+		if ( isset( $piece['property'] ) && preg_match( '/description/', $piece['property'] ) ) {
 			$piece['content'] = $description;
 		}
 		array_push( $meta, $piece );
@@ -101,8 +101,12 @@ function get_seo_data( $id, $type ) {
 
 	$output = array( 'meta' => $meta );
 
-	if ( $title )       $output['title']       = $title;
-	if ( $description ) $output['description'] = $description;
+	if ( $title ) {
+		$output['title'] = $title;
+	}
+	if ( $description ) {
+		$output['description'] = $description;
+	}
 
 	if ( $scripts[0] ) {
 		$output['schema'] = $scripts[0]->nodeValue;

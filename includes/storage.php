@@ -93,6 +93,7 @@ function store_options( $id ) {
 	}
 
 	foreach ( $clean_data as $key => $value ) {
+		$value['ID'] = $key;
 		ElasticSearch\elasticsearch_store( $key, 'options', $value );
 	}
 }

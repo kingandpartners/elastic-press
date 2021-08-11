@@ -40,6 +40,19 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		case 'repeater':
 			if ( ! is_array( $value ) ) {
 				$value = parse_repeater_field( $field, $value, $data, $base_prefix );
+			} else {
+				// pre-parsed repeater fields do not have images parsed so we
+				// check for all images and parse them.
+				foreach ( $value as $index => $repeater_field ) {
+					$new_value = array();
+					foreach ( $repeater_field as $key => $repeater_value ) {
+						if ( isset( $repeater_value['type'] ) && 'image' === $repeater_value['type'] ) {
+							$repeater_value = get_acf_image( $repeater_value );
+						}
+						$new_value[ $key ] = $repeater_value;
+					}
+					$value[ $index ] = $new_value;
+				}
 			}
 			break;
 		case 'post_object':

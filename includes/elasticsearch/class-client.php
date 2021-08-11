@@ -142,6 +142,31 @@ class Client {
 
 	/**
 	 * Gets all published documents with a url, a.k.a. pages
+	 *
+	 * @param array $body The query body.
+	 */
+	public static function search( $body ) {
+		$params  = array(
+			'body'  => $body,
+			'index' => self::read_index_alias( '*' ),
+			'size'  => 10000,
+		);
+		$results = self::client()->search( $params );
+		if ( empty( $results['hits']['hits'] ) ) {
+			$records = array();
+		} else {
+			$records = array_map(
+				function( $record ) {
+					return $record['_source'];
+				},
+				$results['hits']['hits']
+			);
+		}
+			return $records;
+	}
+
+	/**
+	 * Gets all published documents with a url, a.k.a. pages
 	 */
 	public static function get_pages() {
 		$index_name   = self::read_index_alias( '*' );
