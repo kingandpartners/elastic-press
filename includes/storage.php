@@ -81,7 +81,7 @@ function store_terms_data( $type ) {
  *
  * @param string $id The prefix for values in the options table.
  */
-function store_options( $id ) {
+function store_options( $id, $page = null ) {
 	$data       = acf_data( $id );
 	$clean_data = array();
 	foreach ( $data as $key => $value ) {
@@ -94,6 +94,9 @@ function store_options( $id ) {
 
 	foreach ( $clean_data as $key => $value ) {
 		$value['ID'] = $key;
+		if ( $page && $page !== $key ) {
+			continue;
+		}
 		ElasticSearch\elasticsearch_store( $key, 'options', $value );
 	}
 }
