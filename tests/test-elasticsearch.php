@@ -149,10 +149,13 @@ class ElasticsearchTest extends WP_UnitTestCase {
 		Storage\store_options( 'options' );
 		ElasticSearch\Client::update_read_aliases();
 		$found = elasticsearch_find( 'globalOptionsComponentSomePage', 'options' );
-		$this->assertEquals( $found, array(
-			'some_data' => 'test',
-			'ID'        => 'globalOptionsComponentSomePage'
-		) );
+		$this->assertEquals(
+			$found,
+			array(
+				'some_data' => 'test',
+				'ID'        => 'globalOptionsComponentSomePage',
+			)
+		);
 	}
 
 	/**

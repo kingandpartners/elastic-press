@@ -62,7 +62,7 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 			$found,
 			array(
 				'test_option' => 'test',
-				'ID'          => 'globalOptionsComponentSomeOptionsPage'
+				'ID'          => 'globalOptionsComponentSomeOptionsPage',
 			)
 		);
 	}
