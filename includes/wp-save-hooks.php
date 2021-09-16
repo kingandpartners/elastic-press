@@ -62,7 +62,7 @@ function acf_save_post( $id = null ) {
 	if ( strpos( $id, 'term_' ) === 0 ) {
 		return;
 	}
-	$page = ( isset( $_GET['page'] ) ) ? $_GET['page'] : null;
+	$page = ( isset( $_GET['page'] ) ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : null;
 	Storage\store_options( $id, $page );
 }
 

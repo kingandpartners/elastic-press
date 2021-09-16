@@ -80,6 +80,7 @@ function store_terms_data( $type ) {
  * Serializes and stores an options page into elasticsearch
  *
  * @param string $id The prefix for values in the options table.
+ * @param string $page The specific option page name.
  */
 function store_options( $id, $page = null ) {
 	$data       = acf_data( $id );
