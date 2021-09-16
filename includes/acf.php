@@ -27,7 +27,12 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		// The default `image` metadata is just the attachment id
 		// the image array is much more useful.
 		case 'image':
-			$value = get_acf_image( $value );
+			$value = ( ! empty( $value ) ) ? get_acf_image( $value ) : $value;
+			break;
+		case 'oembed':
+			if ( empty( $value ) ) {
+				$value = '';
+			}
 			break;
 		case 'file':
 			if ( ! is_array( $value ) ) {
@@ -115,14 +120,13 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
  * @return Array
  */
 function get_acf_image( $value ) {
-	if ( is_array( $value ) ) {
-		if ( isset( $value['mime_type'] ) && 'image/svg+xml' === $value['mime_type'] ) {
-			$value['raw'] = InlineSVG::remote( $value['url'] );
-		}
-		return $value;
-	} else {
-		return get_image_array( $value );
+	if ( ! is_array( $value ) ) {
+		$value = get_image_array( $value );
 	}
+	if ( isset( $value['mime_type'] ) && 'image/svg+xml' === $value['mime_type'] ) {
+		$value['raw'] = InlineSVG::remote( $value['url'] );
+	}
+	return $value;
 }
 
 /**
@@ -193,21 +197,14 @@ function parse_group_field( $field, $value, $data, $base_prefix ) {
 	foreach ( $sub_fields as $sub_field ) {
 		$sub_field_key = $sub_field['name'];
 		$prefix        = field_prefix( $base_prefix, $field['name'], $sub_field_key );
+		$val           = $value;
 
-		// FIXME: Why are we using $value? (repeater doesn't).
-		if ( isset( $value[ $sub_field_key ] ) ) {
+		if ( is_array( $value ) && array_key_exists( $sub_field_key, $value ) ) {
+			// For non-gutenberge serialization.
 			$val = parse_acf_field( $sub_field, $value[ $sub_field_key ], $data, $prefix );
-			if ( isset( $val['mime_type'] ) && 'image/svg+xml' === $val['mime_type'] ) {
-				$val['raw'] = InlineSVG::remote( $val['url'] );
-			}
-		} else {
-			if ( isset( $data[ $prefix ] ) ) {
-				$val = parse_acf_field( $sub_field, $data[ $prefix ], $data, $prefix );
-			} elseif ( 'link' === $sub_field['type'] && isset( $value[ $sub_field['name'] ] ) ) {
-				$val = parse_acf_field( $sub_field, $value[ $sub_field['name'] ], $data, $prefix );
-			} else {
-				$val = $value;
-			}
+		} elseif ( isset( $data[ $prefix ] ) ) {
+			// For gutenberg serialization.
+			$val = parse_acf_field( $sub_field, $data[ $prefix ], $data, $prefix );
 		}
 		$value_array[ $sub_field_key ] = $val;
 	}
