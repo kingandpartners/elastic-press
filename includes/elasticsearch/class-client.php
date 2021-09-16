@@ -92,6 +92,14 @@ class Client {
 		$index_name = self::write_index_alias( $index );
 
 		try {
+			do_action(
+				'ep_elasticsearch_before_set',
+				array(
+					'index' => $index,
+					'id'    => $id,
+					'value' => $value,
+				)
+			);
 			self::client()->index(
 				array(
 					'index'   => $index_name,
