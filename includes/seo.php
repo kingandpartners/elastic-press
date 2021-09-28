@@ -96,8 +96,15 @@ function get_seo_data( $id, $type ) {
 		if ( isset( $piece['property'] ) && preg_match( '/description/', $piece['property'] ) ) {
 			$piece['content'] = $description;
 		}
+
+		$piece = apply_filters( 'ep_seo_meta_piece', $piece );
+		if ( isset( $piece['name'] ) ) {
+			$piece = apply_filters( 'ep_seo_meta_piece_' . $piece['name'], $piece );
+		}
 		array_push( $meta, $piece );
 	}
+
+	$meta = apply_filters( 'ep_seo_meta', $meta );
 
 	$output = array( 'meta' => $meta );
 
