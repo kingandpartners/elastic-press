@@ -116,7 +116,8 @@ function get_seo_data( $id, $type ) {
 	}
 
 	if ( $scripts[0] ) {
-		$output['schema'] = $scripts[0]->nodeValue;
+		$schema = json_decode($scripts[0]->nodeValue);
+		$output['schema'] = json_encode($schema, JSON_UNESCAPED_UNICODE);
 	}
 
 	return $output;
