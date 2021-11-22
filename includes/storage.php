@@ -58,6 +58,15 @@ function store_term( $term ) {
 }
 
 /**
+ * Serializes and stores a revision into elasticsearch
+ *
+ * @param $revision
+ */
+function store_revision($revision) {
+	// Still need to figure out how to use this
+}
+
+/**
  * Serializes and stores all terms of a taxonomy type
  *
  * @param string $type The type of taxonomy to store.
