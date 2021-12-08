@@ -25,8 +25,10 @@ add_action( 'wp_update_nav_menu', __NAMESPACE__ . '\wp_update_nav_menu', 10, 1 )
  * @param boolean $update Whether the post updated or not.
  */
 function wp_insert_post( $id, $obj, $update ) {
+	$filtered_object = apply_filters( 'ep_insert_post_object_filter', $obj );
+
 	// Skip ACF internals.
-	if ( ! $update || strpos( $obj->post_type, 'acf-' ) === 0 ) {
+	if ( $filtered_object->skip_indexing || ! $update || strpos( $obj->post_type, 'acf-' ) === 0 ) {
 		return;
 	}
 
@@ -60,7 +62,8 @@ function acf_save_post( $id = null ) {
 	if ( strpos( $id, 'term_' ) === 0 ) {
 		return;
 	}
-	Storage\store_options( $id );
+	$page = ( isset( $_GET['page'] ) ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : null;
+	Storage\store_options( $id, $page );
 }
 
 /**

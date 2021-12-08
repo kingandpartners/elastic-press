@@ -9,6 +9,10 @@ namespace ElasticPress\ElasticSearch;
 
 use ElasticPress\Utils\CustomPostTypes;
 use ElasticPress\Utils\Taxonomy;
+use Aws\Credentials\CredentialProvider;
+use Aws\Credentials\Credentials;
+use Aws\ElasticsearchService\ElasticsearchPhpHandler;
+use Elasticsearch\ClientBuilder;
 
 /**
  * Client class for interfacing with ElasticSearch
@@ -43,9 +47,20 @@ class Client {
 	 */
 	public static function client(): \Elasticsearch\Client {
 		if ( null === static::$instance ) {
-			static::$instance = \Elasticsearch\ClientBuilder::create()
-			->setHosts( array( ELASTICSEARCH_URL ) )
-			->build();
+			if ( defined( 'EP_AWS_REGION' ) ) {
+				$provider         = CredentialProvider::fromCredentials(
+					new Credentials( EP_AWS_ACCESS_KEY_ID, EP_AWS_SECRET_ACCESS_KEY )
+				);
+				$handler          = new ElasticsearchPhpHandler( EP_AWS_REGION, $provider );
+				static::$instance = ClientBuilder::create()
+				->setHandler( $handler )
+				->setHosts( array( ELASTICSEARCH_URL ) )
+				->build();
+			} else {
+				static::$instance = ClientBuilder::create()
+				->setHosts( array( ELASTICSEARCH_URL ) )
+				->build();
+			}
 		}
 		return static::$instance;
 	}
@@ -77,6 +92,14 @@ class Client {
 		$index_name = self::write_index_alias( $index );
 
 		try {
+			do_action(
+				'ep_elasticsearch_before_set',
+				array(
+					'index' => $index,
+					'id'    => $id,
+					'value' => $value,
+				)
+			);
 			self::client()->index(
 				array(
 					'index'   => $index_name,
@@ -126,6 +149,130 @@ class Client {
 	}
 
 	/**
+	 * Gets all published documents with a url, a.k.a. pages
+	 *
+	 * @param array $body The query body.
+	 */
+	public static function search( $body ) {
+		$params  = array(
+			'body'  => $body,
+			'index' => self::read_index_alias( '*' ),
+			'size'  => 10000,
+		);
+		$results = self::client()->search( $params );
+		if ( empty( $results['hits']['hits'] ) ) {
+			$records = array();
+		} else {
+			$records = array_map(
+				function( $record ) {
+					return $record['_source'];
+				},
+				$results['hits']['hits']
+			);
+		}
+			return $records;
+	}
+
+	/**
+	 * Gets all published documents with a url, a.k.a. pages
+	 */
+	public static function get_pages() {
+		$index_name   = self::read_index_alias( '*' );
+		$public_types = array_keys( get_post_types( array( 'public' => true ) ) );
+		$response     = self::client()->search(
+			array(
+				'index' => $index_name,
+				'size'  => 10000,
+				'body'  => array(
+					'query' => array(
+						'bool' => array(
+							'must'     => array(
+								array(
+									'exists' => array(
+										'field' => 'url',
+									),
+								),
+								array(
+									'term' => array(
+										'post_status.keyword' => 'publish',
+									),
+								),
+								array(
+									'terms' => array(
+										'post_type.keyword' => $public_types,
+									),
+								),
+							),
+							'must_not' => array(
+								'exists' => array(
+									'field' => 'taxonomy',
+								),
+							),
+						),
+					),
+				),
+			)
+		);
+		$results      = $response['hits']['hits'];
+		return $results;
+	}
+
+	/**
+	 * Gets all documents of a given index - all indicies by default
+	 *
+	 * @param string $index (optional) The index for lookup.
+	 */
+	public static function all( $index = '*' ) {
+		$index_name = self::read_index_alias( $index );
+		$response   = self::client()->search(
+			array(
+				'index' => $index_name,
+				'size'  => 10000,
+				'body'  => array(),
+			)
+		);
+		$results    = $response['hits']['hits'];
+		return $results;
+	}
+
+	/**
+	 * Finds a document by url
+	 *
+	 * @param string $input The url for lookup.
+	 */
+	public static function find_by_url( $input ) {
+		$index_name = self::read_index_alias( '*' );
+
+		$record = null;
+		$urls   = array(
+			"$input/",
+			$input,
+		);
+		foreach ( $urls as $url ) {
+			$results = self::client()->search(
+				array(
+					'index' => $index_name,
+					'body'  => array(
+						'query' => array(
+							'term' => array(
+								'url.keyword' => $url,
+							),
+						),
+					),
+					'size'  => 1,
+				)
+			);
+
+			$record = $results['hits']['hits'][0];
+
+			if ( $record ) {
+				break;
+			}
+		}
+		return $record;
+	}
+
+	/**
 	 * Builds a where query for Elasticsearch
 	 *
 	 * @param string $index The index identifier.
@@ -147,6 +294,11 @@ class Client {
 		// Scope queries by published status.
 		$status = isset( $params['post_status'] ) ? $params['post_status'] : 'publish';
 		$params = array_merge( $params, array( 'post_status' => $status ) );
+		$sort   = isset( $params['sort'] ) ? $params['sort'] : null;
+		$range  = isset( $params['range'] ) ? $params['range'] : null;
+		$from   = isset( $params['from'] ) ? $params['from'] : 0;
+		$size   = isset( $params['size'] ) ? $params['size'] : 10000;
+		unset( $params['sort'], $params['range'], $params['from'], $params['size'] );
 
 		// Convert `id` fields into integers.
 		array_walk(
@@ -180,13 +332,6 @@ class Client {
 			ARRAY_FILTER_USE_BOTH
 		);
 
-		$sort_param = null;
-		foreach ( $id_params as $key => $val ) {
-			if ( is_array( $val ) ) {
-				$sort_param = array( $key, $val );
-			}
-		}
-
 		$query = array( 'bool' => array() );
 
 		if ( ! empty( $or_params ) ) {
@@ -203,6 +348,7 @@ class Client {
 			);
 		}
 
+		$must_params = array();
 		if ( ! empty( $and_params ) ) {
 			array_walk(
 				$and_params,
@@ -210,17 +356,33 @@ class Client {
 					$v = self::map_param( $k, $v );
 				}
 			);
+			$must_params = $and_params;
+		}
+
+		if ( ! empty( $range ) ) {
+			array_push( $must_params, array( 'range' => $range ) );
+		}
+
+		if ( ! empty( $must_params ) ) {
 			$query['bool'] = array_merge(
 				$query['bool'],
 				array(
-					'must' => array_values( $and_params ),
+					'must' => array_values( $must_params ),
 				)
 			);
 		}
 
 		$body = array( 'query' => $query );
 
-		if ( ! empty( $sort_param ) ) {
+		$sort_param = null;
+		foreach ( $id_params as $key => $val ) {
+			if ( is_array( $val ) ) {
+				$sort_param = array( $key, $val );
+			}
+		}
+		if ( ! empty( $sort ) ) {
+			$body['sort'] = $sort;
+		} elseif ( ! empty( $sort_param ) ) {
 			list( $key, $ids ) = $sort_param;
 			$script            = self::painless_script( $key );
 			$body['sort']      = array(
@@ -241,7 +403,8 @@ class Client {
 		return array(
 			'index' => $index_name,
 			'body'  => $body,
-			'size'  => 10000,
+			'size'  => $size,
+			'from'  => $from,
 		);
 	}
 
@@ -294,6 +457,7 @@ SOURCE;
 	public static function delete_where( $index, $params ) {
 		$index_name   = self::read_index_alias( $index );
 		$query_params = self::where_query( $index, $params );
+		unset( $query_params['from'] );
 		self::client()->deleteByQuery( $query_params );
 	}
 
@@ -313,7 +477,42 @@ SOURCE;
 					self::client()->indices()->delete( array( 'index' => $old_index ) );
 				}
 			}
-			$params = array(
+			$mappings = array(
+				'date_detection' => false,
+				'properties'     => array(
+					'content'       => array(
+						'type' => 'text',
+					),
+					'taxonomies'    => array(
+						'type' => 'nested',
+					),
+					'unit_id'       => array(
+						'type' => 'keyword',
+					),
+					'ID'            => array(
+						'type' => 'keyword',
+					),
+					'id'            => array(
+						'type' => 'keyword',
+					),
+					'post_id'       => array(
+						'type' => 'keyword',
+					),
+					'term_id'       => array(
+						'type' => 'keyword',
+					),
+					'post_date'     => array(
+						'type'   => 'date',
+						'format' => 'yyyy-MM-dd HH:mm:ss',
+					),
+					'post_modified' => array(
+						'type'   => 'date',
+						'format' => 'yyyy-MM-dd HH:mm:ss',
+					),
+				),
+			);
+			$mappings = apply_filters( 'ep_mappings', $mappings, $index_type );
+			$params   = array(
 				'index' => $new_index,
 				'body'  => array(
 					'settings' => array(
@@ -324,29 +523,7 @@ SOURCE;
 						),
 					),
 					'mappings' => array(
-						'jsondata' => array(
-							'date_detection' => false,
-							'properties'     => array(
-								'content'    => array(
-									'type' => 'text',
-								),
-								'taxonomies' => array(
-									'type' => 'nested',
-								),
-								'unit_id'    => array(
-									'type' => 'keyword',
-								),
-								'ID'         => array(
-									'type' => 'keyword',
-								),
-								'id'         => array(
-									'type' => 'keyword',
-								),
-								'post_id'    => array(
-									'type' => 'keyword',
-								),
-							),
-						),
+						'jsondata' => $mappings,
 					),
 				),
 			);

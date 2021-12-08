@@ -39,11 +39,12 @@ function store_post( $post ) {
  * @param WP_Term $menu The menu (term) object.
  */
 function store_menu( $menu ) {
-	$key   = $menu->slug . '_nav';
-	$items = wp_get_nav_menu_items( $menu->name );
-	$data  = array_map( 'ElasticPress\Serializers\nav_map', $items );
-	$type  = $menu->taxonomy;
-	ElasticSearch\elasticsearch_store( $key, $type, array( 'menu_items' => $data ) );
+	$key                = $menu->slug . '_nav';
+	$items              = wp_get_nav_menu_items( $menu->name );
+	$data               = term_data( $menu );
+	$data['menu_items'] = array_map( 'ElasticPress\Serializers\nav_map', $items );
+	$type               = $menu->taxonomy;
+	ElasticSearch\elasticsearch_store( $key, $type, $data );
 }
 
 /**
@@ -54,6 +55,15 @@ function store_menu( $menu ) {
 function store_term( $term ) {
 	$data = term_data( $term );
 	ElasticSearch\elasticsearch_store( $term->term_id, $data['taxonomy'], $data );
+}
+
+/**
+ * Serializes and stores a revision into elasticsearch
+ *
+ * @param $revision
+ */
+function store_revision($revision) {
+	// Still need to figure out how to use this
 }
 
 /**
@@ -79,8 +89,9 @@ function store_terms_data( $type ) {
  * Serializes and stores an options page into elasticsearch
  *
  * @param string $id The prefix for values in the options table.
+ * @param string $page The specific option page name.
  */
-function store_options( $id ) {
+function store_options( $id, $page = null ) {
 	$data       = acf_data( $id );
 	$clean_data = array();
 	foreach ( $data as $key => $value ) {
@@ -92,6 +103,10 @@ function store_options( $id ) {
 	}
 
 	foreach ( $clean_data as $key => $value ) {
+		$value['ID'] = $key;
+		if ( $page && $page !== $key ) {
+			continue;
+		}
 		ElasticSearch\elasticsearch_store( $key, 'options', $value );
 	}
 }

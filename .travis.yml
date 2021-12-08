@@ -31,6 +31,7 @@ before_install:
   - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
 
 install:
+  - composer self-update 1.10.6
   - composer config -g http-basic.my.yoast.com token $YOAST_TOKEN
   - composer install
 

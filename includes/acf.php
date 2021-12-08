@@ -11,6 +11,7 @@ use ElasticPress\Utils\ArrayHelpers;
 use ElasticPress\Utils\InlineSVG;
 use function ElasticPress\Serializers\post_data;
 use function ElasticPress\Serializers\get_image_array;
+use function ElasticPress\Serializers\term_data;
 
 /**
  * Convert raw ACF data into nested fields
@@ -26,7 +27,12 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		// The default `image` metadata is just the attachment id
 		// the image array is much more useful.
 		case 'image':
-			$value = get_acf_image( $value );
+			$value = ( ! empty( $value ) ) ? get_acf_image( $value ) : $value;
+			break;
+		case 'oembed':
+			if ( empty( $value ) ) {
+				$value = '';
+			}
 			break;
 		case 'file':
 			if ( ! is_array( $value ) ) {
@@ -39,6 +45,19 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		case 'repeater':
 			if ( ! is_array( $value ) ) {
 				$value = parse_repeater_field( $field, $value, $data, $base_prefix );
+			} else {
+				// pre-parsed repeater fields do not have images parsed so we
+				// check for all images and parse them.
+				foreach ( $value as $index => $repeater_field ) {
+					$new_value = array();
+					foreach ( $repeater_field as $key => $repeater_value ) {
+						if ( is_array( $repeater_value ) && isset( $repeater_value['type'] ) && 'image' === $repeater_value['type'] ) {
+							$repeater_value = get_acf_image( $repeater_value );
+						}
+						$new_value[ $key ] = $repeater_value;
+					}
+					$value[ $index ] = $new_value;
+				}
 			}
 			break;
 		case 'post_object':
@@ -51,6 +70,40 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		case 'link':
 			if ( empty( $value ) ) {
 				$value = array();
+			}
+			break;
+		case 'flexible_content':
+			if (!getenv('ES_SKIP_ACF_PARSING')) {
+				$data = array();
+				foreach ( $value as $index => $m ) {
+					$layout_idx = array_search( $m['acf_fc_layout'], array_column( $field['layouts'], 'name' ) );
+					$layout     = $field['layouts'][ $layout_idx ];
+					$idx        = 0;
+					foreach ( $m as $k => $mod ) {
+						if ( 'acf_fc_layout' === $k ) {
+							continue;
+						}
+						$f    = false;
+						$keys = array(
+							$layout['key'] . "_$k",
+							str_replace( 'layout', 'field', $layout['name'] . "_$k" ),
+							$layout['key'] . '_' . $layout['name'],
+						);
+						foreach ( $keys as $key ) {
+							if ( false !== $f ) {
+								break;
+							}
+							$f = acf_get_field( $key );
+						}
+						if ( 'clone' === $f['type'] ) {
+							$f = $f['sub_fields'][ $idx ];
+						}
+						$data[ $index ][ $k ] = parse_acf_field( $f, $mod, $data, $base_prefix );
+						$idx++;
+					}
+					$data[ $index ]['acf_fc_layout'] = $m['acf_fc_layout'];
+				}
+				$value = $data;
 			}
 			break;
 	}
@@ -69,14 +122,13 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
  * @return Array
  */
 function get_acf_image( $value ) {
-	if ( is_array( $value ) ) {
-		if ( isset( $value['mime_type'] ) && 'image/svg+xml' === $value['mime_type'] ) {
-			$value['raw'] = InlineSVG::remote( $value['url'] );
-		}
-		return $value;
-	} else {
-		return get_image_array( $value );
+	if ( ! is_array( $value ) ) {
+		$value = get_image_array( $value );
 	}
+	if ( isset( $value['mime_type'] ) && 'image/svg+xml' === $value['mime_type'] ) {
+		$value['raw'] = InlineSVG::remote( $value['url'] );
+	}
+	return $value;
 }
 
 /**
@@ -146,20 +198,15 @@ function parse_group_field( $field, $value, $data, $base_prefix ) {
 
 	foreach ( $sub_fields as $sub_field ) {
 		$sub_field_key = $sub_field['name'];
+		$prefix        = field_prefix( $base_prefix, $field['name'], $sub_field_key );
+		$val           = $value;
 
-		// FIXME: Why are we using $value? (repeater doesn't).
-		if ( isset( $value[ $sub_field_key ] ) ) {
-			$val = $value[ $sub_field_key ];
-			if ( isset( $val['mime_type'] ) && 'image/svg+xml' === $val['mime_type'] ) {
-				$val['raw'] = InlineSVG::remote( $val['url'] );
-			}
-		} else {
-			$prefix = field_prefix( $base_prefix, $field['name'], $sub_field_key );
-			if ( isset( $data[ $prefix ] ) ) {
-				$val = parse_acf_field( $sub_field, $data[ $prefix ], $data, $prefix );
-			} else {
-				$val = $value;
-			}
+		if ( is_array( $value ) && array_key_exists( $sub_field_key, $value ) ) {
+			// For non-gutenberge serialization.
+			$val = parse_acf_field( $sub_field, $value[ $sub_field_key ], $data, $prefix );
+		} elseif ( isset( $data[ $prefix ] ) ) {
+			// For gutenberg serialization.
+			$val = parse_acf_field( $sub_field, $data[ $prefix ], $data, $prefix );
 		}
 		$value_array[ $sub_field_key ] = $val;
 	}

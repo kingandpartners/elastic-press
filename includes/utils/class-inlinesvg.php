@@ -23,7 +23,7 @@ class InlineSVG {
 	public static function remote( $remote_url ) {
 		$file_contents = file_get_contents( $remote_url );
 		$headers       = FileHelpers::parse_headers( $http_response_header );
-		if ( 'gzip' === $headers['Content-Encoding'] ) {
+		if ( isset( $headers['Content-Encoding'] ) && 'gzip' === $headers['Content-Encoding'] ) {
 			$file_contents = gzinflate( substr( $file_contents, 10, -8 ) );
 		}
 		return $file_contents;
