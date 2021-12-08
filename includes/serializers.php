@@ -132,17 +132,17 @@ function parse_block_fields( $block ) {
 
 	foreach ( $fields as $field ) {
 		$name = $field['name'];
-		if ( ! isset( $data[ $name ] ) && ! isset( $data[ "field_$type_$name" ] ) ) {
+		if ( ! isset( $data[ $name ] ) && ! isset( $data[ "field_$type\_$name" ] ) ) {
 			continue;
 		}
-		$value = isset( $data[ $name ] ) ? $data[ $name ] : $data[ "field_$type_$name" ];
+		$value = isset( $data[ $name ] ) ? $data[ $name ] : $data[ "field_$type\_$name" ];
 		if ( isset( $value['row-0'] ) ) {
 			// Something wonky happening for ACF repeater fields data.
 			$arr = array();
 			foreach ( array_values( $value ) as $item ) {
 				$hash = array();
 				foreach ( $item as $k => $v ) {
-					$replaced_key          = str_replace( "field_$type_$name_", '', $k );
+					$replaced_key          = str_replace( "field_$type\_$name\_", '', $k );
 					$hash[ $replaced_key ] = parse_acf_field( array( 'type' => $replaced_key ), intval( $v ) );
 				}
 				$arr[] = $hash;
