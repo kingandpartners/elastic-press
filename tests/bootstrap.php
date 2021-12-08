@@ -22,6 +22,9 @@ require_once $_tests_dir . '/includes/functions.php';
 // Give access to test support functions.
 require_once 'support/nav-menus/functions.php';
 
+// Yoast has some phpunit-polyfills.
+require_once 'vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
+
 /**
  * Manually load the plugin being tested.
  */

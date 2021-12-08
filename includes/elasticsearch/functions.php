@@ -46,7 +46,6 @@ function elasticsearch_where( $index_name, $params = array() ) {
  * Retrieve values from Elasticsearch by query params
  *
  * @param string $index_name The index identifier.
- * @param Array  $params Query array of parameters.
  */
 function elasticsearch_all( $index_name = '*' ) {
 	return Client::all( $index_name );
@@ -65,8 +64,7 @@ function elasticsearch_delete_where( $index_name, $params = array() ) {
 /**
  * Delete values from Elasticsearch by query params
  *
- * @param string $index_name The index identifier.
- * @param Array  $params Query array of parameters.
+ * @param string $url The url identifier.
  */
 function elasticsearch_find_by_url( $url ) {
 	return Client::find_by_url( $url );
@@ -74,9 +72,6 @@ function elasticsearch_find_by_url( $url ) {
 
 /**
  * Delete values from Elasticsearch by query params
- *
- * @param string $index_name The index identifier.
- * @param Array  $params Query array of parameters.
  */
 function elasticsearch_get_pages() {
 	return Client::get_pages();
