@@ -27,7 +27,7 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		// The default `image` metadata is just the attachment id
 		// the image array is much more useful.
 		case 'image':
-			$value = ( ! empty( $value ) ) ? get_acf_image( $value ) : $value;
+			$value = ( ! empty( $value ) ) ? get_acf_image( $value ) : null;
 			break;
 		case 'oembed':
 			if ( empty( $value ) ) {
