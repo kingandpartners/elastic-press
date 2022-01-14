@@ -22,6 +22,8 @@ function warm_site_cache() {
 	sweep_pages();
 	sweep_taxonomy();
 
+	do_action( 'ep_warm_site_cache' );
+
 	ElasticSearch\Client::update_read_aliases();
 }
 
