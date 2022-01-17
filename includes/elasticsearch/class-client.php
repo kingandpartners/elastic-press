@@ -153,10 +153,12 @@ class Client {
 	 *
 	 * @param array $body The query body.
 	 */
-	public static function search( $body ) {
+	public static function search( $params ) {
+		$body    = isset( $params['body'] ) ? $params['body'] : $params;
+		$index   = isset( $params['index'] ) ? $params['index'] : '*';
 		$params  = array(
 			'body'  => $body,
-			'index' => self::read_index_alias( '*' ),
+			'index' => self::read_index_alias( $index ),
 			'size'  => 10000,
 		);
 		$results = self::client()->search( $params );
