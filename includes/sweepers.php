@@ -38,6 +38,7 @@ function sweep_post_type( $post_type, $options = null ) {
 		'post_type'      => $post_type,
 		'posts_per_page' => -1,
 	);
+	$query = apply_filters( "sweep_post_type", $query );
 	$query = apply_filters( "sweep_post_type_$post_type", $query );
 	if ( $options ) {
 		$query = array_merge( $query, $options );
