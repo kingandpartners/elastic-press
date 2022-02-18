@@ -14,6 +14,7 @@ use ElasticPress\ElasticSearch;
  * Loops through all content and stores it into Elasticsearch - also clears indexes
  */
 function warm_site_cache() {
+	ElasticSearch\Client::prune_stale_aliases();
 	ElasticSearch\Client::update_write_aliases();
 
 	Storage\store_options( 'options' );
