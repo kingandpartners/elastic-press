@@ -37,9 +37,7 @@ require_once 'includes/utils/fields.php';
  */
 Config::required_constants(
 	array(
-		'ELASTICSEARCH_URL',
 		'WP_ENV',
-		'SITE_INDEX_KEY',
 		'FRONTEND_PATH',
 		'CMS_PATH',
 	)
