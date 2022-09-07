@@ -274,7 +274,10 @@ function nav_map( $nav_item ) {
 	$data     = (array) $nav_item;
 	$acf_data = acf_data( $nav_item->ID );
 	if ( is_array( $acf_data ) ) {
-		$data = array_merge( $acf_data, $data );
+		// Make sure $nav_item is updated with acf_data
+		foreach ($acf_data as $key => $value) {
+			$nav_item->$key = $value;
+		}
 	}
 	return apply_filters( 'ep_nav_map', $nav_item, $data );
 }
