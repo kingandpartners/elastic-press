@@ -87,8 +87,8 @@ function init() {
 function load() {
 	CustomPostTypes::register_all();
 	Options\register_global_options();
-	Fields\register_fields();
 	register_php_files();
+	Fields\register_fields();
 	do_action( 'ep_after_load' );
 }
 
