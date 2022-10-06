@@ -276,5 +276,5 @@ function nav_map( $nav_item ) {
 	if ( is_array( $acf_data ) ) {
 		$data = array_merge( $acf_data, $data );
 	}
-	return $data;
+	return apply_filters( 'ep_nav_map', $nav_item, $data );
 }

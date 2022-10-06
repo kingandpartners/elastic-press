@@ -92,6 +92,7 @@ function store_terms_data( $type ) {
  * @param string $page The specific option page name.
  */
 function store_options( $id, $page = null ) {
+	$id         = apply_filters( 'ep_options_id', $id );
 	$data       = acf_data( $id );
 	$clean_data = array();
 	foreach ( $data as $key => $value ) {
@@ -103,10 +104,12 @@ function store_options( $id, $page = null ) {
 	}
 
 	foreach ( $clean_data as $key => $value ) {
-		$value['ID'] = $key;
 		if ( $page && $page !== $key ) {
 			continue;
 		}
+		$key         = apply_filters( 'ep_options_key', $key );
+		$value       = apply_filters( 'ep_options_value', $value );
+		$value['ID'] = $key;
 		ElasticSearch\elasticsearch_store( $key, 'options', $value );
 	}
 }

@@ -14,6 +14,7 @@ use ElasticPress\ElasticSearch;
  * Loops through all content and stores it into Elasticsearch - also clears indexes
  */
 function warm_site_cache() {
+	ElasticSearch\Client::prune_stale_aliases();
 	ElasticSearch\Client::update_write_aliases();
 
 	Storage\store_options( 'options' );
@@ -21,6 +22,8 @@ function warm_site_cache() {
 	sweep_posts();
 	sweep_pages();
 	sweep_taxonomy();
+
+	do_action( 'ep_warm_site_cache' );
 
 	ElasticSearch\Client::update_read_aliases();
 }
@@ -36,6 +39,7 @@ function sweep_post_type( $post_type, $options = null ) {
 		'post_type'      => $post_type,
 		'posts_per_page' => -1,
 	);
+	$query = apply_filters( "sweep_post_type", $query );
 	$query = apply_filters( "sweep_post_type_$post_type", $query );
 	if ( $options ) {
 		$query = array_merge( $query, $options );

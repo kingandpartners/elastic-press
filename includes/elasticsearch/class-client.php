@@ -153,10 +153,12 @@ class Client {
 	 *
 	 * @param array $body The query body.
 	 */
-	public static function search( $body ) {
+	public static function search( $params ) {
+		$body    = isset( $params['body'] ) ? $params['body'] : $params;
+		$index   = isset( $params['index'] ) ? $params['index'] : '*';
 		$params  = array(
 			'body'  => $body,
-			'index' => self::read_index_alias( '*' ),
+			'index' => self::read_index_alias( $index ),
 			'size'  => 10000,
 		);
 		$results = self::client()->search( $params );
@@ -535,6 +537,46 @@ SOURCE;
 				)
 			);
 		}
+	}
+
+	/**
+	 * Sometimes old index aliases stick around, this funciton purges the old
+	 * stale aliases
+	 */
+	public static function prune_stale_aliases() {
+		$indices    = self::client()->indices();
+		$alias_keys = array_keys( $indices->getAlias( array( 'name' => '*' ) ) );
+		// Find all duplicate base alias keys by removing _TIMESTAMP from end of key.
+		foreach ($alias_keys as $key) {
+			$pieces = explode( '_', $key);
+		}
+		$aliases = array_reduce( $alias_keys, function( $carry, $key ) {
+			$pieces    = explode( '_', $key );
+			$timestamp = array_pop( $pieces );
+			$alias     = implode( '_', $pieces );
+			if ( ! isset( $carry[$alias] ) ) $carry[$alias] = [];
+			array_push( $carry[$alias], $timestamp );
+			return $carry;
+		}, array() );
+
+		$stale_aliases = array_reduce( array_keys( $aliases ), function( $carry, $key ) use( $aliases ) {
+			$val = $aliases[$key];
+			if ( count( $val ) > 1 ) {
+				sort( $val );
+				$lower = array_shift( $val );
+				array_push( $carry, $key . '_' . $lower );
+			}
+			return $carry;
+		}, array() );
+
+		foreach( $stale_aliases as $stale_alias ) {
+			$old_indexes = self::delete_alias_if_exists( $stale_alias );
+			if ( $old_indexes ) {
+				$indices->delete( array( 'index' => $old_indexes ) );
+			}
+		}
+
+		return $stale_aliases;
 	}
 
 	/**
