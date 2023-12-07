@@ -88,7 +88,7 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 				$data = array();
 
 				foreach ( $value as $index => $m ) {
-					// index could be integer or string like "layout_62c81b294f5d7"
+					// keys in $field['layouts'] could be integer or string like "layout_62c81b294f5d7"
 					// so we have to search the layout objects themselves to get the
 					// correctly returned key/index
 					$layout_map = array_map(
