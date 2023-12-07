@@ -108,7 +108,8 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 							$f = acf_get_field( $key );
 						}
 
-						// check for false/null values
+						// Note: `acf_get_field` may not find $key,
+						// so check $f for false/null values
 						if ( $f && array_key_exists('type', $f) && 'clone' === $f['type'] ) {
 							$f = $f['sub_fields'][ $idx ];
 						}
