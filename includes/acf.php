@@ -86,10 +86,20 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		case 'flexible_content':
 			if (!getenv('ES_SKIP_ACF_PARSING')) {
 				$data = array();
+
 				foreach ( $value as $index => $m ) {
-					$layout_idx = array_search( $m['acf_fc_layout'], array_column( $field['layouts'], 'name' ) );
-					$layout     = $field['layouts'][ $layout_idx ];
-					$idx        = 0;
+					// keys in $field['layouts'] could be integer or string like "layout_62c81b294f5d7"
+					// so we have to search the layout objects themselves to get the
+					// correctly returned key/index
+					$layout_map = array_map(
+						function($field_layout) {
+							return $field_layout['name'];
+						},
+						$field['layouts']
+					);
+					$layout_idx	= array_search( $m['acf_fc_layout'], $layout_map);
+					$layout		= $field['layouts'][ $layout_idx ];
+					$idx		= 0;
 
 					foreach ( $m as $k => $mod ) {
 						if ( 'acf_fc_layout' === $k ) {
