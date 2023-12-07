@@ -23,7 +23,27 @@ use function ElasticPress\Serializers\term_data;
  * @return mixed $value
  */
 function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
-	switch ( $field['type'] ) {
+	error_log(' ');
+	error_log('/////////////////////////////// parse_acf_field ////////////////////////////////////////');
+	//error_log(print_r( [debug_backtrace()[0], $field, $value], true));
+	error_log(print_r( ["value / aka mod", $value], true));
+
+	error_log("field['type'] " . $field['type']);
+
+	//
+	// NOTE:
+	// If $field is false or doesn't have 'type' key
+	// we skip the switch statement and return the original $value
+	// below
+	//
+	$field_type = false;
+	if ($field && array_key_exists('type', $field) ) {
+		$field_type = $field['type'];
+	}
+
+	error_log("field_type " . $field_type);
+
+	switch ( $field_type ) {
 		// The default `image` metadata is just the attachment id
 		// the image array is much more useful.
 		case 'image':
@@ -73,13 +93,29 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 			}
 			break;
 		case 'flexible_content':
+			error_log(' ');
+			error_log('/////////////////////////////////////////////////////////////////////////////////////////');
+			error_log('parse_acf_field : flexible_content');
+
 			if (!getenv('ES_SKIP_ACF_PARSING')) {
 				$data = array();
 				foreach ( $value as $index => $m ) {
+					error_log( "searching for... " . $m['acf_fc_layout']);
+					error_log( print_r(["searching in... ", array_column( $field['layouts'], 'name' )], true));
+
 					$layout_idx = array_search( $m['acf_fc_layout'], array_column( $field['layouts'], 'name' ) );
 					$layout     = $field['layouts'][ $layout_idx ];
+
+					error_log( print_r("layout_idx: " . $layout_idx, true));
+					error_log( print_r("found layout key in layouts: " . $layout['key'], true));
+					error_log( print_r("layout name: " .  $layout['name'], true));
+
+
 					$idx        = 0;
 					foreach ( $m as $k => $mod ) {
+						error_log( print_r(["k", $k], true));
+						error_log( print_r(["mod", $mod], true));
+
 						if ( 'acf_fc_layout' === $k ) {
 							continue;
 						}
@@ -88,17 +124,43 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 							$layout['key'] . "_$k",
 							str_replace( 'layout', 'field', $layout['name'] . "_$k" ),
 							$layout['key'] . '_' . $layout['name'],
+							// $layout['key'] . '_' . str_replace( 'layout_', '', $layout['name'] ),
 						);
 						foreach ( $keys as $key ) {
 							if ( false !== $f ) {
+								error_log( "found key " . $key, true);
 								break;
 							}
 							$f = acf_get_field( $key );
 						}
-						if ( 'clone' === $f['type'] ) {
+
+						if ( false == $f) {
+							error_log(' ');
+							error_log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+							error_log("Warning: can't fine fields for keys");
+							error_log( print_r($keys, true) );
+
+							// error_log( print_r(["field layouts", $field['layouts']], true));
+							// $field_layouts = array_map(function ($a) { return $a['key']; }, $field['layouts']);
+							// error_log( print_r(["field layouts", $field_layouts], true));
+
+
+							// $data[ $index ]['acf_fc_layout'] = $m['acf_fc_layout'];
+							// $data[ $index ][ $k ] = "parsing error";
+
+							// error_log( print_r( ["data", $data], true));
+							// error_log("continuing...");
+							// continue;
+						}
+
+						if ( $f && array_key_exists('type', $f) && 'clone' === $f['type'] ) {
 							$f = $f['sub_fields'][ $idx ];
 						}
-						$data[ $index ][ $k ] = parse_acf_field( $f, $mod, $data, $base_prefix );
+
+						$parsed_value = parse_acf_field( $f, $mod, $data, $base_prefix );
+						error_log( print_r(["parsed_value", $parsed_value], true));
+
+						$data[ $index ][ $k ] = $parsed_value;
 						$idx++;
 					}
 					$data[ $index ]['acf_fc_layout'] = $m['acf_fc_layout'];
