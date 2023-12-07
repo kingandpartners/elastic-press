@@ -86,15 +86,8 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 		case 'flexible_content':
 			if (!getenv('ES_SKIP_ACF_PARSING')) {
 				$data = array();
-				error_log('flexible_content');
 
 				foreach ( $value as $index => $m ) {
-					error_log( "searching for... " . $m['acf_fc_layout']);
-					error_log( print_r(["searching in... ", array_column( $field['layouts'], 'name' )], true));
-
-					$real_index = array_search( $m['acf_fc_layout'], array_map(function($field_layout) {return $field_layout['name'];}, $field['layouts']) );
-					error_log( "real_index " . $real_index);
-
 					// index could be integer or string like "layout_62c81b294f5d7"
 					// so we have to search the layout objects themselves to get the
 					// correctly returned key/index
@@ -104,20 +97,9 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 						},
 						$field['layouts']
 					);
-					$layout_idx = array_search( $m['acf_fc_layout'], $layout_map);
-
-					error_log( print_r("layout_idx: " . $layout_idx, true));
-
-					$layout     = $field['layouts'][ $layout_idx ];
-					$idx        = 0;
-
-					//error_log( print_r([ "field layouts... ", $field['layouts'] ], true));
-					error_log( print_r([ "field ", $field ], true));
-
-					if ($field == null || $field['layouts'] == null) {
-						error_log( print_r("found layout key in layouts: " . $layout['key'], true));
-						error_log( print_r("layout name: " .  $layout['name'], true));
-					}
+					$layout_idx	= array_search( $m['acf_fc_layout'], $layout_map);
+					$layout		= $field['layouts'][ $layout_idx ];
+					$idx		= 0;
 
 					foreach ( $m as $k => $mod ) {
 						if ( 'acf_fc_layout' === $k ) {
