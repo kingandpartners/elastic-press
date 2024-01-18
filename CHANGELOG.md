@@ -2,6 +2,10 @@
 
 [Releases](https://github.com/kingandpartners/elastic-press/releases/)
 
+## `v0.8.1`
+- #15 [bulletproofing] acf.php... fix parse_acf_field for falsy value handling
+- #16 [bulletproofing] acf.php... fix layout index search
+
 ## `v0.8.0`
 - [ ] #13 fixes Elasticsearch "Limit of total fields in index" exception
 
