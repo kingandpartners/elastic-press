@@ -23,7 +23,18 @@ use function ElasticPress\Serializers\term_data;
  * @return mixed $value
  */
 function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
-	switch ( $field['type'] ) {
+	//
+	// NOTE:
+	// If $field is false or doesn't have 'type' key
+	// we skip the switch statement and return the original $value
+	// down below
+	//
+	$field_type = false;
+	if ($field && array_key_exists('type', $field) ) {
+		$field_type = $field['type'];
+	}
+
+	switch ( $field_type ) {
 		// The default `image` metadata is just the attachment id
 		// the image array is much more useful.
 		case 'image':
@@ -79,6 +90,7 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 					$layout_idx = array_search( $m['acf_fc_layout'], array_column( $field['layouts'], 'name' ) );
 					$layout     = $field['layouts'][ $layout_idx ];
 					$idx        = 0;
+
 					foreach ( $m as $k => $mod ) {
 						if ( 'acf_fc_layout' === $k ) {
 							continue;
@@ -95,10 +107,15 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 							}
 							$f = acf_get_field( $key );
 						}
-						if ( 'clone' === $f['type'] ) {
+
+						// Note: `acf_get_field` may not find $key,
+						// so check $f for false/null values
+						if ( $f && array_key_exists('type', $f) && 'clone' === $f['type'] ) {
 							$f = $f['sub_fields'][ $idx ];
 						}
-						$data[ $index ][ $k ] = parse_acf_field( $f, $mod, $data, $base_prefix );
+
+						$parsed_value = parse_acf_field( $f, $mod, $data, $base_prefix );
+						$data[ $index ][ $k ] = $parsed_value;
 						$idx++;
 					}
 					$data[ $index ]['acf_fc_layout'] = $m['acf_fc_layout'];
