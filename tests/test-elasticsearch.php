@@ -25,6 +25,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 * Runs before each test
 	 */
 	public function setUp() {
+		parent::setUp(); // Aha!
 		ElasticSearch\Client::update_write_aliases();
 		// Need the editor role to be able to insert taxonomy, etc.
 		$admin = $this->factory->user->create( array( 'role' => 'editor' ) );
