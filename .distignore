@@ -36,6 +36,7 @@ yarn.lock
 tests
 vendor
 node_modules
+backups
 *.sql
 *.tar.gz
 *.zip
