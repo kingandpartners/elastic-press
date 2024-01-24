@@ -53,7 +53,7 @@
     "wp-coding-standards/wpcs": "*",
     "vlucas/phpdotenv": "^2.2.0",
     "oscarotero/env": "^1.1.0",
-    "yoast/phpunit-polyfills": "^1.0"
+    "yoast/phpunit-polyfills": "^1.1"
   },
   "extra": {
     "installer-paths": {
