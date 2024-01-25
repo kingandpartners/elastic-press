@@ -43,7 +43,10 @@
     "elasticsearch/elasticsearch": "^6.1",
     "yoast/wordpress-seo-premium": "^15.5",
     "jsq/amazon-es-php": "^0.3.0",
-    "aws/aws-sdk-php": "^3.161"
+    "aws/aws-sdk-php": "^3.297",
+    "aws/aws-crt-php": "^1.2",
+    "guzzlehttp/guzzle": "^6.5.8",
+    "guzzlehttp/psr7": "^1.9.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5",
