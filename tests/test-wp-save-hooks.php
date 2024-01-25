@@ -19,7 +19,7 @@ class WpSaveHooksTest extends WP_UnitTestCase {
 	/**
 	 * Runs before each test
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp(); // Aha!
 		ElasticSearch\Client::update_write_aliases();
 		// Need the editor role to be able to insert taxonomy, etc.

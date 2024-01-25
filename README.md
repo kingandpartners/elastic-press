@@ -51,6 +51,11 @@ bin/install-tests
 bin/run-tests
 ```
 
+### run one test
+```
+./vendor/bin/phpunit --filter ElasticsearchTest::test_store_menu
+```
+
 
 
 
