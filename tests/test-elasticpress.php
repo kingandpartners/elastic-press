@@ -14,6 +14,7 @@ class ElasticPressTest extends WP_UnitTestCase {
 	 * Runs before each test
 	 */
 	public function setUp() {
+		parent::setUp(); // Aha!
 	}
 
 	/**

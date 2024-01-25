@@ -17,6 +17,7 @@ class SerializerTest extends WP_UnitTestCase {
 	 * Runs before each test
 	 */
 	public function setUp() {
+		parent::setUp(); // Aha!
 		ACFComposer::registerFieldGroup(
 			array(
 				'name'     => 'billboard',
@@ -170,28 +171,28 @@ class SerializerTest extends WP_UnitTestCase {
 			"pdf": $pdf_id,
 			"_pdf": "field_billboard_pdf",
 			"bullets_0_title": "Bullet Title 1",
-      "_bullets_0_title": "field_billboard_bullets_title",
+	  "_bullets_0_title": "field_billboard_bullets_title",
 			"bullets_0_description": "Bullet Description 1",
 			"_bullets_0_description": "field_billboard_bullets_description",
 			"bullets_1_title": "Bullet Title 2",
-      "_bullets_1_title": "field_billboard_bullets_title",
+	  "_bullets_1_title": "field_billboard_bullets_title",
 			"bullets_1_description": "Bullet Description 2",
 			"_bullets_1_description": "field_billboard_bullets_description",
 			"bullets": 2,
-      "_bullets": "field_billboard_bullets",
+	  "_bullets": "field_billboard_bullets",
 			"post": $post_id,
 			"_post": "field_billboard_post",
 			"featured_group_description": "Featured Group Description",
 			"_featured_group_description": "field_billboard_featured_group_description",
 			"featured_group_title": "Featured Group Title",
-      "_featured_group_title": "field_billboard_featured_group_title",
+	  "_featured_group_title": "field_billboard_featured_group_title",
 			"featured_group": "",
-      "_featured_group": "field_billboard_featured_group",
+	  "_featured_group": "field_billboard_featured_group",
 			"cta": {
-		      "title": "CTA Title",
-		      "url": "https://example.test/link/",
-		      "target": "_blank"
-      },
+			  "title": "CTA Title",
+			  "url": "https://example.test/link/",
+			  "target": "_blank"
+	  },
 			"_cta": "field_billboard_cta"
 	},
 	"align": "",

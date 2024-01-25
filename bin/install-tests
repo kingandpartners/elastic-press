@@ -6,7 +6,7 @@ source '.env.test';
 
 version=latest
 
-mysql -u $DB_USER -e "DROP DATABASE $DB_NAME;"
+mysql -u $DB_USER -e "DROP DATABASE IF EXISTS $DB_NAME;"
 
 # when you are installing test suite for first time if you want to create the
 # database remove the last argument "true"

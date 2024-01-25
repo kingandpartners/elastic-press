@@ -17,6 +17,8 @@ class FlexibleContentTest extends WP_UnitTestCase {
 	 * Runs before each test
 	 */
 	public function setUp() {
+		parent::setUp(); // Aha!
+
 		ACFComposer::registerFieldGroup(
 			array(
 				'name'     => 'flex_components',
