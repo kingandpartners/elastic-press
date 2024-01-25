@@ -16,7 +16,7 @@ class SerializerTest extends WP_UnitTestCase {
 	/**
 	 * Runs before each test
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp(); // Aha!
 		ACFComposer::registerFieldGroup(
 			array(
@@ -102,7 +102,7 @@ class SerializerTest extends WP_UnitTestCase {
 	/**
 	 * Runs after each test
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		$uploads_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress/wp-content/uploads';
 		// Clears uploads so they don't increment.
 		exec( "rm -rf $uploads_dir/*" );
@@ -135,17 +135,22 @@ class SerializerTest extends WP_UnitTestCase {
 		$result  = Serializers\post_data( $post );
 
 		$this->assertEquals( $result['post_title'], 'Some content' );
-		$this->assertArraySubset(
-			array(
-				'name'        => 'some-term',
-				'slug'        => 'some-term',
-				'taxonomy'    => 'some-taxonomy',
-				'count'       => 1,
-				'post_name'   => 'some-term',
-				'post_status' => 'publish',
-			),
-			$result['taxonomies'][0]
+
+		$arr = array(
+			'name'        => 'some-term',
+			'slug'        => 'some-term',
+			'taxonomy'    => 'some-taxonomy',
+			'count'       => 1,
+			'post_name'   => 'some-term',
+			'post_status' => 'publish',
 		);
+
+		$result_array = $result['taxonomies'][0];
+
+		foreach ( $arr as $key => $value ) {
+			$this->assertArrayHasKey( $key, $result_array );
+			$this->assertSame( $value, $result_array[ $key ] );
+		}
 	}
 
 	/**
