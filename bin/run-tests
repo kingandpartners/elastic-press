@@ -9,4 +9,7 @@ WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
 rm -rf ${WP_CORE_DIR}wp-content/uploads/*
 
 # Run theme tests using custom phpunit config
-./vendor/bin/phpunit -c phpunit.xml.dist
+# requires composer global install of phpunit (see readme)
+# otherwise can use `./vendor/bin/phpunit`
+# for local package install
+phpunit -c phpunit.xml.dist
