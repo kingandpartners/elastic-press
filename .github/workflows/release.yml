@@ -15,5 +15,5 @@ jobs:
           workflow_id: partial-build.yml
           inputs: |
             {
-              "package_name": "$GITHUB_REPOSITORY",
+              "package_name": "$GITHUB_REPOSITORY"
             }
