@@ -13,4 +13,4 @@ jobs:
           token: ${{ secrets.KINGMACHINE_WORKFLOW_TOKEN }}
           repo: kingandpartners/kingandpartners-composer
           workflow_id: partial-build.yml
-          inputs: '{"package_name": "$GITHUB_REPOSITORY"}'
+          inputs: '{"package_name": "kingandpartners/elastic-press"}'
