@@ -1,0 +1,16 @@
+name: Trigger Satis Build
+
+on:
+  - release
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kingandpartners/dispatch-workflow@main
+        with:
+          token: ${{ secrets.KINGMACHINE_WORKFLOW_TOKEN }}
+          repo: kingandpartners/kingandpartners-composer
+          workflow_id: partial-build.yml
+          inputs: '{"package_name": "kingandpartners/elastic-press"}'

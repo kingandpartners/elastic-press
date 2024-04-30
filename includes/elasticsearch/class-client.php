@@ -514,16 +514,18 @@ SOURCE;
 				),
 			);
 			$mappings = apply_filters( 'ep_mappings', $mappings, $index_type );
+			$settings = array(
+				'mapping' => array(
+					'total_fields' => array(
+						'limit' => 10000,
+					),
+				),
+			);
+			$settings = apply_filters( 'ep_settings', $settings, $index_type );
 			$params   = array(
 				'index' => $new_index,
 				'body'  => array(
-					'settings' => array(
-						'mapping' => array(
-							'total_fields' => array(
-								'limit' => 10000,
-							),
-						),
-					),
+					'settings' => $settings,
 					'mappings' => array(
 						'jsondata' => $mappings,
 					),
