@@ -23,7 +23,7 @@
       "type": "package",
       "package": {
         "name": "advanced-custom-fields/advanced-custom-fields-pro",
-        "version": "5.8.7",
+        "version": "6.2.9",
         "type": "wordpress-plugin",
         "dist": {
           "type": "zip",
@@ -41,7 +41,7 @@
     "advanced-custom-fields/advanced-custom-fields-pro": "*",
     "flyntwp/acf-field-group-composer": "dev-flattenNestedFilters",
     "elasticsearch/elasticsearch": "^6.1",
-    "yoast/wordpress-seo-premium": "^15.5",
+    "yoast/wordpress-seo-premium": "*",
     "jsq/amazon-es-php": "^0.3.0",
     "aws/aws-sdk-php": "^3.161"
   },
