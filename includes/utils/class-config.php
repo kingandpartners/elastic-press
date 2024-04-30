@@ -93,7 +93,7 @@ class Config {
 				define( $constant, getenv( $constant ) );
 			}
 			if ( empty( constant( $constant ) ) ) {
-				$msg = sprintf( '%s not defined. Make sure to set %s in your environment.', $constant );
+				$msg = sprintf( '%s not defined. Make sure to set %s in your environment.', $constant, $constant );
 				trigger_error(
 					esc_html( $msg ),
 					E_USER_ERROR
