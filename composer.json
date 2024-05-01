@@ -35,7 +35,7 @@
   "require": {
     "composer/installers": "~1.0",
     "advanced-custom-fields/advanced-custom-fields-pro": "*",
-    "flyntwp/acf-field-group-composer": "1.1.0",
+    "flyntwp/acf-field-group-composer": "v1.1.0",
     "elasticsearch/elasticsearch": "^6.1",
     "yoast/wordpress-seo-premium": "*",
     "jsq/amazon-es-php": "^0.3.0",
