@@ -107,8 +107,8 @@ function register_options_page( $title, $type, $page_name, $fields ) {
  * @param mixed  $value     The value for the option to be stored.
  */
 function store_options_page( $page_name, $key, $value ) {
-	$options_key = "options_${page_name}_${key}";
-	$field_key   = "field_${page_name}_${page_name}_$key";
+	$options_key = "options_{$page_name}_{$key}";
+	$field_key   = "field_{$page_name}_{$page_name}_$key";
 	update_option( "_$options_key", $field_key );
 	update_option( $options_key, $value );
 }
