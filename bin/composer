@@ -5,4 +5,5 @@ docker run --rm \
 	--volume $HOME/.composer:/tmp \
 	--volume $PWD:/app \
 	--user $(id -u):$(id -g) \
-	kingandpartners/composer $@
+	composer:1.10 \
+	sh -c "composer $*"
