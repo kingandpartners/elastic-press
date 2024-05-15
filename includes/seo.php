@@ -45,7 +45,7 @@ function get_yoast_title( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->title;
+	return $context->title ?? '';
 }
 
 /**
@@ -61,7 +61,7 @@ function get_yoast_description( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->description;
+	return $context->description ?? '';
 }
 
 /**
