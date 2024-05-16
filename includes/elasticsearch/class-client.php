@@ -263,7 +263,7 @@ class Client {
 				)
 			);
 
-			$record = $results['hits']['hits'][0];
+			$record = $results['hits']['hits'][0] ?? null;
 
 			if ( $record ) {
 				break;
