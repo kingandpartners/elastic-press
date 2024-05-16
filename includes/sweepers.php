@@ -59,9 +59,15 @@ function sweep_posts() {
 	);
 	array_unshift( $post_types, 'post' );
 
-	$ignore_post_types = array(
-		'acf-field-group',
-		'acf-field',
+	// remove all keys from $post_types that start with "acf-" or "flamingo_"
+	$ignore_post_types = array_filter(
+		$post_types,
+		function( $post_type ) {
+			return (
+				0 === strpos( $post_type, 'acf-' ) ||
+				0 === strpos( $post_type, 'flamingo_' )
+			);
+		}
 	);
 	foreach ( $ignore_post_types as $post_type ) {
 		$key = array_search( $post_type, $post_types );

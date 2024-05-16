@@ -12,10 +12,6 @@
       "url": "https://wpackagist.org"
     },
     {
-      "type": "vcs",
-      "url": "https://github.com/jGRUBBS/acf-field-group-composer"
-    },
-    {
       "type": "composer",
       "url": "https://my.yoast.com/packages/"
     },
@@ -39,9 +35,9 @@
   "require": {
     "composer/installers": "~1.0",
     "advanced-custom-fields/advanced-custom-fields-pro": "*",
-    "flyntwp/acf-field-group-composer": "dev-flattenNestedFilters",
+    "flyntwp/acf-field-group-composer": "^1.1.0",
     "elasticsearch/elasticsearch": "^6.8",
-    "yoast/wordpress-seo-premium": "^15.5",
+    "yoast/wordpress-seo-premium": "*",
     "jsq/amazon-es-php": "^0.3.0",
     "aws/aws-sdk-php": "^3.297",
     "aws/aws-crt-php": "^1.2",
@@ -52,7 +48,7 @@
     "phpunit/phpunit": "^9.6",
     "squizlabs/php_codesniffer": "~3.0",
     "phpcompatibility/phpcompatibility-wp": "*",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "wp-coding-standards/wpcs": "*",
     "vlucas/phpdotenv": "^2.2.0",
     "oscarotero/env": "^1.1.0",
