@@ -105,9 +105,9 @@ function get_seo_data( $id, $type ) {
 		array_push( $meta, $piece );
 	}
 
-	$meta = apply_filters( 'ep_seo_meta', $meta );
-
+	$meta   = apply_filters( 'ep_seo_meta', $meta );
 	$output = array( 'meta' => $meta );
+	$output = apply_filters( 'ep_seo_output', $output );
 
 	if ( $title ) {
 		$output['title'] = $title;
