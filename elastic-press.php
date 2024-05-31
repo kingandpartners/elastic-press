@@ -86,30 +86,24 @@ function init() {
  */
 function load() {
 	CustomPostTypes::register_all();
+	register_php_file( 'functions.php' );
 	Options\register_global_options();
 	Fields\register_fields();
-	register_php_files();
+	register_php_file('fields.php');
+	register_php_file('taxonomies.php');
 	do_action( 'ep_after_load' );
 }
 
 /**
  * Register PHP files
  */
-function register_php_files() {
-	$php_files = array(
-		'fields.php',
-		'functions.php',
-		'taxonomies.php',
-	);
-
+function register_php_file($php_file) {
 	foreach ( array( 'cms', 'frontend' ) as $type ) {
-		foreach ( $php_files as $php_file ) {
-			if ( ! isset( Config::$files[ $type ][ $php_file ] ) ) {
-				continue;
-			}
-			foreach ( Config::$files[ $type ][ $php_file ] as $config ) {
-				require_once $config['path'];
-			}
+		if ( ! isset( Config::$files[ $type ][ $php_file ] ) ) {
+			continue;
+		}
+		foreach ( Config::$files[ $type ][ $php_file ] as $config ) {
+			require_once $config['path'];
 		}
 	}
 }
