@@ -45,6 +45,11 @@ function register_global_options() {
  * @param Array  $fields The array of ACF fields to register.
  */
 function register_global_options_page( $type, $page_name, $fields ) {
+	$skip = apply_filters( 'ep_skip_global_options', false, $type, $page_name, $fields );
+	if ( $skip ) {
+		return;
+	}
+	$fields = apply_filters( 'ep_global_options_fields', $fields, $type, $page_name );
 	register_options_page( 'Global Options', $type, $page_name, $fields );
 }
 
