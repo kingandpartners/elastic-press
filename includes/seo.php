@@ -45,7 +45,7 @@ function get_yoast_title( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->title;
+	return $context->title ?? '';
 }
 
 /**
@@ -61,7 +61,7 @@ function get_yoast_description( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->description;
+	return $context->description ?? '';
 }
 
 /**
@@ -99,7 +99,7 @@ function get_seo_data( $id, $type ) {
 
 		$piece = apply_filters( 'ep_seo_meta_piece', $piece );
 		if ( isset( $piece['name'] ) ) {
-			$piece['content'] = utf8_decode($piece['content']);
+			$piece['content'] = mb_convert_encoding($piece['content'], 'ISO-8859-1', 'UTF-8');
 			$piece = apply_filters( 'ep_seo_meta_piece_' . $piece['name'], $piece );
 		}
 		array_push( $meta, $piece );

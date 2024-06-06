@@ -24,7 +24,8 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	/**
 	 * Runs before each test
 	 */
-	public function setUp() {
+	public function setUp(): void {
+		parent::setUp(); // Aha!
 		ElasticSearch\Client::update_write_aliases();
 		// Need the editor role to be able to insert taxonomy, etc.
 		$admin = $this->factory->user->create( array( 'role' => 'editor' ) );
@@ -44,7 +45,7 @@ class ElasticsearchTest extends WP_UnitTestCase {
 	 */
 	public function test_default_indexes() {
 		$indexes = array( 'post', 'page', 'category', 'nav_menu', 'options', 'seo' );
-		$this->assertArraySubset( $indexes, ElasticSearch\Client::indexes() );
+		$this->assertTrue( array_intersect( $indexes, ElasticSearch\Client::indexes() ) === $indexes);
 	}
 
 	/**
