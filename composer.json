@@ -16,25 +16,13 @@
       "url": "https://my.yoast.com/packages/"
     },
     {
-      "type": "package",
-      "package": {
-        "name": "advanced-custom-fields/advanced-custom-fields-pro",
-        "version": "5.8.7",
-        "type": "wordpress-plugin",
-        "dist": {
-          "type": "zip",
-          "url": "https://connect.advancedcustomfields.com/index.php?p=pro&a=download"
-        },
-        "require": {
-          "philippbaschke/acf-pro-installer": "^1.0",
-          "composer/installers": "^1.0"
-        }
-      }
+      "type":"composer",
+      "url":"https://connect.advancedcustomfields.com"
     }
   ],
   "require": {
     "composer/installers": "~1.0",
-    "advanced-custom-fields/advanced-custom-fields-pro": "*",
+    "wpengine/advanced-custom-fields-pro": "*",
     "flyntwp/acf-field-group-composer": "^1.1.0",
     "elasticsearch/elasticsearch": "^6.8",
     "yoast/wordpress-seo-premium": "*",
@@ -57,7 +45,7 @@
         "type:wordpress-muplugin",
         "aws/aws-sdk-php",
         "flyntwp/acf-field-group-composer",
-        "advanced-custom-fields/advanced-custom-fields-pro",
+        "wpengine/advanced-custom-fields-pro",
         "elasticsearch/elasticsearch",
         "yoast/wordpress-seo-premium"
       ]

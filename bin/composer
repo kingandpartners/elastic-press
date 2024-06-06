@@ -1,9 +1,24 @@
 #!/bin/bash
 
-docker run --rm \
+if [ -f .env ]; then
+  . .env
+fi
+
+COMPOSER_CONFIG=()
+
+if [ -n "$ACF_PRO_KEY" ]; then
+  COMPOSER_CONFIG+=("composer config -g http-basic.connect.advancedcustomfields.com $ACF_PRO_KEY https://www.kingandpartners.com &&")
+fi
+
+ARGS="--rm"
+if [ -t 0 ]; then
+  ARGS="$ARGS -it"
+fi
+
+docker run $ARGS \
 	--env ACF_PRO_KEY \
 	--volume $HOME/.composer:/tmp \
 	--volume $PWD:/app \
 	--user $(id -u):$(id -g) \
 	composer:1.10 \
-	sh -c "composer $*"
+	sh -c "${COMPOSER_CONFIG[*]} composer $*"
