@@ -2,6 +2,9 @@
 
 [Releases](https://github.com/kingandpartners/elastic-press/releases/)
 
+## `v0.8.2`
+- #33 Update composer to use official ACF repo
+
 ## `v0.8.1`
 - #15 [bulletproofing] acf.php... fix parse_acf_field for falsy value handling
 - #16 [bulletproofing] acf.php... fix layout index search
