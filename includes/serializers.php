@@ -235,7 +235,7 @@ function get_image_array( $thumbnail_id ) {
 	$image['filename'] = basename( $file );
 	$image['filesize'] = image_filesize( $file );
 	$image['alt']      = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
-	$image['srcset']   = wp_get_attachment_image_srcset( $thumbnail_id ) ?? '';
+	$image['srcset']   = wp_get_attachment_image_srcset( $thumbnail_id ) ?: '';
 	foreach ( get_intermediate_image_sizes() as $size ) {
 		$image['sizes'][ $size ] = wp_get_attachment_image_src( $thumbnail_id, $size )[0];
 	}
