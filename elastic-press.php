@@ -84,11 +84,11 @@ function init() {
  */
 function load() {
 	CustomPostTypes::register_all();
-	register_php_file( 'functions.php' );
+	register_php_file('functions.php');
+	register_php_file('taxonomies.php');
+	register_php_file('fields.php');
 	Options\register_global_options();
 	Fields\register_fields();
-	register_php_file('fields.php');
-	register_php_file('taxonomies.php');
 	do_action( 'ep_after_load' );
 }
 
