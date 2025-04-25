@@ -73,7 +73,7 @@ function parse_acf_field( $field, $value, $data = array(), $base_prefix = '' ) {
 			break;
 		case 'post_object':
 			$post  = get_post( $value );
-			$value = post_data( $post );
+			if ( $post ) $value = post_data( $post );
 			break;
 		case 'group':
 			$value = parse_group_field( $field, $value, $data, $base_prefix );
