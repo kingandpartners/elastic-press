@@ -16,7 +16,9 @@ class FlexibleContentTest extends WP_UnitTestCase {
 	/**
 	 * Runs before each test
 	 */
-	public function setUp() {
+	public function setUp(): void {
+		parent::setUp(); // Aha!
+
 		ACFComposer::registerFieldGroup(
 			array(
 				'name'     => 'flex_components',
@@ -64,7 +66,7 @@ class FlexibleContentTest extends WP_UnitTestCase {
 	/**
 	 * Runs after each test
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		$uploads_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress/wp-content/uploads';
 		// Clears uploads so they don't increment.
 		exec( "rm -rf $uploads_dir/*" );

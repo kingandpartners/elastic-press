@@ -45,6 +45,11 @@ function register_global_options() {
  * @param Array  $fields The array of ACF fields to register.
  */
 function register_global_options_page( $type, $page_name, $fields ) {
+	$skip = apply_filters( 'ep_skip_global_options', false, $type, $page_name, $fields );
+	if ( $skip ) {
+		return;
+	}
+	$fields = apply_filters( 'ep_global_options_fields', $fields, $type, $page_name );
 	register_options_page( 'Global Options', $type, $page_name, $fields );
 }
 
@@ -107,8 +112,8 @@ function register_options_page( $title, $type, $page_name, $fields ) {
  * @param mixed  $value     The value for the option to be stored.
  */
 function store_options_page( $page_name, $key, $value ) {
-	$options_key = "options_${page_name}_${key}";
-	$field_key   = "field_${page_name}_${page_name}_$key";
+	$options_key = "options_{$page_name}_{$key}";
+	$field_key   = "field_{$page_name}_{$page_name}_$key";
 	update_option( "_$options_key", $field_key );
 	update_option( $options_key, $value );
 }
