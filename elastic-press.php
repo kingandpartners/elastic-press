@@ -75,6 +75,10 @@ add_action( 'registered_taxonomy', 'ElasticPress\Utils\Taxonomy::register', 10, 
  * Register files
  */
 function init() {
+	$skip_init = filter_var(getenv('SKIP_EP_INIT'), FILTER_VALIDATE_BOOLEAN);
+	if ( $skip_init ) {
+		return;
+	}
 	Config::register_files( 'frontend', FRONTEND_PATH );
 	Config::register_files( 'cms', CMS_PATH );
 }
