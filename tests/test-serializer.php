@@ -148,6 +148,32 @@ class SerializerTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test primary taxonomy serialization is namespaced.
+	 */
+	public function test_primary_taxonomy_serialization_is_namespaced() {
+		$taxonomy = 'some-taxonomy';
+		$term     = 'some-term';
+		register_taxonomy( $taxonomy, 'post' );
+		$created_term = wp_insert_term( $term, $taxonomy );
+
+		$content = array(
+			'post_title' => 'Some content',
+			'tax_input'  => array( $taxonomy => $term ),
+		);
+		$post    = $this->factory->post->create_and_get( $content );
+
+		update_post_meta( $post->ID, "_yoast_wpseo_primary_{$taxonomy}", $created_term['term_id'] );
+
+		$result = Serializers\post_data( $post );
+
+		$this->assertArrayHasKey( 'primary_taxonomies', $result );
+		$this->assertArrayHasKey( $taxonomy, $result['primary_taxonomies'] );
+		$this->assertEquals( intval( $created_term['term_id'] ), intval( $result['primary_taxonomies'][ $taxonomy ]['term_id'] ) );
+		$this->assertEquals( $taxonomy, $result['primary_taxonomies'][ $taxonomy ]['taxonomy'] );
+		$this->assertArrayNotHasKey( "{$taxonomy}_primary", $result );
+	}
+
+	/**
 	 * Test post Gutenberg serialization
 	 */
 	public function test_post_gutenberg_serialization() {

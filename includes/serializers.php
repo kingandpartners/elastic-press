@@ -60,6 +60,11 @@ function post_data( $post ) {
 	$data['seo']           = get_seo_data( $post->ID, 'post' );
 	$data                  = array_merge( acf_data( $post->ID ), $data );
 
+	$primary_taxonomy_data = add_primary_taxonomy_data( $data['taxonomies'], $post, $terms );
+	if ( ! empty( $primary_taxonomy_data ) ) {
+		$data['primary_taxonomies'] = $primary_taxonomy_data;
+	}
+
 	if ( has_excerpt( $post->ID ) ) {
 		$data['excerpt'] = $post->post_excerpt;
 	}
@@ -69,6 +74,59 @@ function post_data( $post ) {
 	}
 
 	return apply_filters( 'ep_post_data', $data, $post );
+}
+
+/**
+ * Adds Yoast primary taxonomy term data to serialized post payload.
+ *
+ * @param array   $taxonomies Serialized taxonomy data.
+ * @param WP_Post $post  The post object.
+ * @param array   $terms Taxonomy terms assigned to the post.
+ * @return array
+ */
+function add_primary_taxonomy_data( $taxonomies, $post, $terms ) {
+	$primary_taxonomy_data = array();
+
+	$taxonomy_names = array_values(
+		array_unique(
+			array_filter(
+				array_map(
+					function( $term ) {
+						return is_object( $term ) ? $term->taxonomy : null;
+					},
+					$terms
+				)
+			)
+		)
+	);
+
+	foreach ( $taxonomy_names as $taxonomy_name ) {
+		$primary_term_id = get_post_meta( $post->ID, "_yoast_wpseo_primary_{$taxonomy_name}", true );
+		if ( '' === $primary_term_id ) {
+			continue;
+		}
+
+		$primary_term_id = intval( $primary_term_id );
+		$primary_term    = null;
+
+		foreach ( $taxonomies as $taxonomy_term ) {
+			$term_taxonomy = $taxonomy_term['taxonomy'] ?? null;
+			$term_id       = intval( $taxonomy_term['term_id'] ?? 0 );
+			
+			if ( $taxonomy_name === $term_taxonomy && $primary_term_id === $term_id ) {
+				$primary_term = $taxonomy_term;
+				break;
+			}
+		}
+
+		if ( null === $primary_term ) {
+			continue;
+		}
+
+		$primary_taxonomy_data[ $taxonomy_name ] = $primary_term;
+	}
+
+	return $primary_taxonomy_data;
 }
 
 /**
