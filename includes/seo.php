@@ -45,7 +45,7 @@ function get_yoast_title( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->title ?? '';
+	return decode_text( $context->title ?? '' );
 }
 
 /**
@@ -61,7 +61,22 @@ function get_yoast_description( $id, $type ) {
 	} else {
 		$context = YoastSEO()->meta->for_post( $id );
 	}
-	return $context->description ?? '';
+	return decode_text( $context->description ?? '' );
+}
+
+/**
+ * Decode HTML entities in Yoast text
+ *
+ * Yoast encodes titles and descriptions for HTML output, but the meta values
+ * parsed with DOMDocument are plain text, and consumers escape the payload
+ * themselves. Decoding keeps the payload plain text throughout, so "&" isn't
+ * escaped twice.
+ *
+ * @param String $text The encoded text.
+ * @return String $text
+ */
+function decode_text( $text ) {
+	return html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 }
 
 /**

@@ -2,6 +2,9 @@
 
 [Releases](https://github.com/kingandpartners/elastic-press/releases/)
 
+## Unreleased
+- #36 [bugfix] seo.php... decode Yoast's title and description so the SEO payload is plain text and `&` isn't escaped twice
+
 ## `v0.8.1`
 - #15 [bulletproofing] acf.php... fix parse_acf_field for falsy value handling
 - #16 [bulletproofing] acf.php... fix layout index search
